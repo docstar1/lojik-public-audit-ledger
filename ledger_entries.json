@@ -1,0 +1,1609 @@
+{
+  "schema_version": "1.0.0",
+  "ledger_name": "ALETHEIA Public Verification & Performance Ledger",
+  "product": "LojikVantage",
+  "vendor": "LojikX",
+  "generated_utc": "2026-10-21T20:53:25+00:00",
+  "data_version": "vx-2026.10.21-r1",
+  "chain": {
+    "algorithm": "SHA-256",
+    "genesis": "GENESIS",
+    "rule": "chain_hash[n] = SHA-256( previous_hash + '|' + payload_hash + '|' + target_date )",
+    "head": "e2b9123ad0f89f68d6dc919d5785d021b75c354a80af206a78ab298def49fccd",
+    "entry_count": 7
+  },
+  "headline": {
+    "startup_breakout_lift": 4.7291,
+    "startup_reference_lift": 1.66,
+    "startup_lift_multiple": 2.8488,
+    "startup_auc": 0.8195,
+    "startup_auc_ci": [
+      0.7942,
+      0.8434
+    ],
+    "startup_universe": 14658,
+    "manager_breakout_lift": 2.1028,
+    "manager_alpha_lift": 2.0551,
+    "manager_auc": 0.7354,
+    "manager_cohorts": 11,
+    "pension_irr_above": 18.7225,
+    "pension_irr_below": 7.4454,
+    "pension_tvpi_above": 2.1998,
+    "pension_tvpi_below": 1.7174,
+    "pension_irr_alpha": 11.2771,
+    "pension_partnerships": 25,
+    "overlap_max_multiple": 39.4926,
+    "overlap_examples": [
+      {
+        "name": "Versant Ventures",
+        "nominal_positions": 84,
+        "true_independent_bets": 3.5959,
+        "overlap_multiple": 23.3599
+      },
+      {
+        "name": "Alta Partners",
+        "nominal_positions": 83,
+        "true_independent_bets": 2.9587,
+        "overlap_multiple": 28.0532
+      },
+      {
+        "name": "Domain Associates",
+        "nominal_positions": 82,
+        "true_independent_bets": 2.4657,
+        "overlap_multiple": 33.2568
+      },
+      {
+        "name": "Sofinnova Ventures",
+        "nominal_positions": 73,
+        "true_independent_bets": 5.968,
+        "overlap_multiple": 12.2318
+      },
+      {
+        "name": "Orbimed Advisors",
+        "nominal_positions": 69,
+        "true_independent_bets": 2.225,
+        "overlap_multiple": 31.0111
+      },
+      {
+        "name": "Mpm Capital",
+        "nominal_positions": 69,
+        "true_independent_bets": 2.9231,
+        "overlap_multiple": 23.6052
+      },
+      {
+        "name": "Arch Venture Partners",
+        "nominal_positions": 69,
+        "true_independent_bets": 5.2444,
+        "overlap_multiple": 13.1569
+      },
+      {
+        "name": "Novartis Venture Fund",
+        "nominal_positions": 65,
+        "true_independent_bets": 1.6459,
+        "overlap_multiple": 39.4926
+      },
+      {
+        "name": "Sv Life Sciences",
+        "nominal_positions": 58,
+        "true_independent_bets": 2.5883,
+        "overlap_multiple": 22.4086
+      },
+      {
+        "name": "Johnson Johnson Development Corporation",
+        "nominal_positions": 58,
+        "true_independent_bets": 3.7487,
+        "overlap_multiple": 15.4718
+      }
+    ],
+    "emerging_share_pct": 77.78,
+    "emerging_auc": 0.7206,
+    "baseline_emerging_auc": 0.5
+  },
+  "health_checks": [
+    {
+      "id": 1,
+      "name": "Cryptographic SHA-256 Chain Integrity",
+      "status": "GREEN",
+      "observed": "7 chained batches",
+      "threshold": "every batch hash recomputes exactly",
+      "plain": "Every published prediction batch carries a SHA-256 fingerprint, and each fingerprint also hashes the one before it. That means nobody can quietly edit an old entry: the moment a single character changes, the whole chain stops recomputing."
+    },
+    {
+      "id": 2,
+      "name": "Out-of-Sample Zero-Lookahead Guard",
+      "status": "GREEN",
+      "observed": "every epoch scored on data frozen at its own cutoff",
+      "threshold": "no post-cutoff information in any feature",
+      "plain": "Each vintage is scored only on information that existed on the day it was taken, then graded against what actually happened later. It is the only way to know a score is real rather than hindsight."
+    },
+    {
+      "id": 3,
+      "name": "Manager Breakout Lift > 2.0x",
+      "status": "GREEN",
+      "observed": "2.10x top-decile breakout lift",
+      "threshold": "> 2.00x versus the cohort base rate",
+      "plain": "If you back the top tenth of managers our score ranks, you hit real breakout companies more than twice as often as picking at random from the same universe. Industry rankings manage roughly 1.4x to 1.9x."
+    },
+    {
+      "id": 4,
+      "name": "Startup Breakout Lift (ARCHE™) > 4.5x",
+      "status": "GREEN",
+      "observed": "4.73x top-decile breakout lift",
+      "threshold": "> 4.50x versus the cohort base rate",
+      "plain": "Among startups scored before they exited, the top tenth produced large exits about 4.7 times more often than chance. The published industry benchmark for the same task is 1.66x."
+    },
+    {
+      "id": 5,
+      "name": "Pension IRR Alpha Verified (+11.28%)",
+      "status": "GREEN",
+      "observed": "+11.28% realised net IRR alpha",
+      "threshold": "> 0 percentage points on official LP disclosures",
+      "plain": "On the official public pension disclosures, partnerships sitting in the top half of our ranking earned 18.72% net IRR against 7.45% for the rest. The alpha is measured on money the pension actually reported, not on a back-test."
+    },
+    {
+      "id": 6,
+      "name": "Monotonic Decile Calibration (D10 vs D1 = 27.1x)",
+      "status": "GREEN",
+      "observed": "D10 32.78% vs D1 1.77% = 27.06x",
+      "threshold": "each decile must beat the one below it",
+      "plain": "Rank the book into ten buckets and the chance of a breakout has to rise cleanly from bucket to bucket. Ours does: 1.77% in the worst bucket, 32.78% in the best. That is a 27.06x gap you can read straight off the table."
+    },
+    {
+      "id": 7,
+      "name": "Automated Cloud Heartbeat Active",
+      "status": "GREEN",
+      "observed": "daily scheduled pulse committed to the public repository",
+      "threshold": "a fresh pulse within 48 hours",
+      "plain": "A scheduled job re-verifies the whole ledger every day and commits the result back to this repository. If the numbers ever stopped adding up, the green light would go red on its own without anyone pressing a button."
+    }
+  ],
+  "epochs": [
+    {
+      "epoch": "2002",
+      "label": "LojikVantage™ SOPHIA™ Composite Index",
+      "n_managers": null,
+      "n_emerging": null,
+      "emerging_share_pct": null,
+      "median_nominal_positions": null,
+      "median_true_independent_bets": null,
+      "median_redundancy_multiple": null,
+      "total_forward_breakout_exits": null,
+      "capital_deployed_total_usd": null,
+      "metrics": {
+        "rolling_discrimination_auc": {
+          "sophia": 0.7787,
+          "phronesis": 0.797,
+          "exposure": 0.7954
+        }
+      }
+    },
+    {
+      "epoch": "2003",
+      "label": "LojikVantage™ SOPHIA™ Composite Index",
+      "n_managers": null,
+      "n_emerging": null,
+      "emerging_share_pct": null,
+      "median_nominal_positions": null,
+      "median_true_independent_bets": null,
+      "median_redundancy_multiple": null,
+      "total_forward_breakout_exits": null,
+      "capital_deployed_total_usd": null,
+      "metrics": {
+        "rolling_discrimination_auc": {
+          "sophia": 0.7314,
+          "phronesis": 0.7595,
+          "exposure": 0.672
+        }
+      }
+    },
+    {
+      "epoch": "2004",
+      "label": "LojikVantage™ SOPHIA™ Composite Index",
+      "n_managers": null,
+      "n_emerging": null,
+      "emerging_share_pct": null,
+      "median_nominal_positions": null,
+      "median_true_independent_bets": null,
+      "median_redundancy_multiple": null,
+      "total_forward_breakout_exits": null,
+      "capital_deployed_total_usd": null,
+      "metrics": {
+        "rolling_discrimination_auc": {
+          "sophia": 0.679,
+          "phronesis": 0.6841,
+          "exposure": 0.6807
+        }
+      }
+    },
+    {
+      "epoch": "2005",
+      "label": "LojikVantage™ SOPHIA™ Composite Index",
+      "n_managers": 521,
+      "n_emerging": 437,
+      "emerging_share_pct": 83.88,
+      "median_nominal_positions": 10.0,
+      "median_true_independent_bets": 6.23,
+      "median_redundancy_multiple": 1.667,
+      "total_forward_breakout_exits": 76,
+      "capital_deployed_total_usd": 202029013120,
+      "metrics": {
+        "breakout_lift": {
+          "sophia": 2.215,
+          "phronesis": 1.8214,
+          "exposure": 1.035,
+          "track_record_rank": 2.0003,
+          "exit_predictor": 1.4735,
+          "capital_scale": 1.9592,
+          "deal_volume": 1.1784,
+          "diversification": 1.0515
+        },
+        "discrimination_auc": {
+          "sophia": 0.7458,
+          "phronesis": 0.7492,
+          "exposure": 0.7059,
+          "track_record_rank": 0.6098,
+          "exit_predictor": 0.6159,
+          "capital_scale": 0.7497,
+          "deal_volume": 0.7149,
+          "diversification": 0.6706
+        },
+        "emerging_auc": {
+          "sophia": 0.731,
+          "phronesis": 0.7458,
+          "exposure": 0.6807,
+          "track_record_rank": 0.5,
+          "exit_predictor": 0.5,
+          "capital_scale": 0.7341,
+          "deal_volume": 0.6875,
+          "diversification": 0.6317
+        },
+        "rolling_discrimination_auc": {
+          "sophia": 0.7458,
+          "phronesis": 0.7492,
+          "exposure": 0.7059
+        }
+      }
+    },
+    {
+      "epoch": "2006",
+      "label": "LojikVantage™ SOPHIA™ Composite Index",
+      "n_managers": null,
+      "n_emerging": null,
+      "emerging_share_pct": null,
+      "median_nominal_positions": null,
+      "median_true_independent_bets": null,
+      "median_redundancy_multiple": null,
+      "total_forward_breakout_exits": null,
+      "capital_deployed_total_usd": null,
+      "metrics": {
+        "rolling_discrimination_auc": {
+          "sophia": 0.7101,
+          "phronesis": 0.7082,
+          "exposure": 0.6657
+        }
+      }
+    },
+    {
+      "epoch": "2007",
+      "label": "LojikVantage™ SOPHIA™ Composite Index",
+      "n_managers": 701,
+      "n_emerging": 536,
+      "emerging_share_pct": 76.46,
+      "median_nominal_positions": 12.0,
+      "median_true_independent_bets": 6.59,
+      "median_redundancy_multiple": 1.812,
+      "total_forward_breakout_exits": 88,
+      "capital_deployed_total_usd": 370172579243,
+      "metrics": {
+        "breakout_lift": {
+          "sophia": 1.845,
+          "phronesis": 2.1306,
+          "exposure": 1.2666,
+          "track_record_rank": 1.9558,
+          "exit_predictor": 1.3305,
+          "capital_scale": 1.1344,
+          "deal_volume": 1.0385,
+          "diversification": 0.9233
+        },
+        "discrimination_auc": {
+          "sophia": 0.6916,
+          "phronesis": 0.688,
+          "exposure": 0.6763,
+          "track_record_rank": 0.6204,
+          "exit_predictor": 0.6415,
+          "capital_scale": 0.7175,
+          "deal_volume": 0.6667,
+          "diversification": 0.6236
+        },
+        "emerging_auc": {
+          "sophia": 0.6206,
+          "phronesis": 0.6376,
+          "exposure": 0.5881,
+          "track_record_rank": 0.5,
+          "exit_predictor": 0.5,
+          "capital_scale": 0.6404,
+          "deal_volume": 0.5653,
+          "diversification": 0.5243
+        },
+        "external_2026_auc": {
+          "sophia": 0.5669,
+          "phronesis": 0.5639,
+          "exposure": 0.5772,
+          "track_record_rank": 0.532,
+          "exit_predictor": 0.5541,
+          "capital_scale": 0.6266,
+          "deal_volume": 0.5762,
+          "diversification": 0.6066
+        },
+        "rolling_discrimination_auc": {
+          "sophia": 0.6916,
+          "phronesis": 0.688,
+          "exposure": 0.6763
+        }
+      }
+    },
+    {
+      "epoch": "2008",
+      "label": "LojikVantage™ SOPHIA™ Composite Index",
+      "n_managers": null,
+      "n_emerging": null,
+      "emerging_share_pct": null,
+      "median_nominal_positions": null,
+      "median_true_independent_bets": null,
+      "median_redundancy_multiple": null,
+      "total_forward_breakout_exits": null,
+      "capital_deployed_total_usd": null,
+      "metrics": {
+        "rolling_discrimination_auc": {
+          "sophia": 0.7398,
+          "phronesis": 0.7281,
+          "exposure": 0.7331
+        }
+      }
+    },
+    {
+      "epoch": "2009",
+      "label": "LojikVantage™ SOPHIA™ Composite Index",
+      "n_managers": null,
+      "n_emerging": null,
+      "emerging_share_pct": null,
+      "median_nominal_positions": null,
+      "median_true_independent_bets": null,
+      "median_redundancy_multiple": null,
+      "total_forward_breakout_exits": null,
+      "capital_deployed_total_usd": null,
+      "metrics": {
+        "rolling_discrimination_auc": {
+          "sophia": 0.7568,
+          "phronesis": 0.7474,
+          "exposure": 0.7316
+        }
+      }
+    },
+    {
+      "epoch": "2010",
+      "label": "LojikVantage™ SOPHIA™ Composite Index",
+      "n_managers": 978,
+      "n_emerging": 671,
+      "emerging_share_pct": 68.61,
+      "median_nominal_positions": 14.0,
+      "median_true_independent_bets": 7.31,
+      "median_redundancy_multiple": 1.799,
+      "total_forward_breakout_exits": 142,
+      "capital_deployed_total_usd": 718168678278,
+      "metrics": {
+        "breakout_lift": {
+          "sophia": 2.0253,
+          "phronesis": 2.3042,
+          "exposure": 1.5215,
+          "track_record_rank": 1.9732,
+          "exit_predictor": 1.9702,
+          "capital_scale": 2.1086,
+          "deal_volume": 1.6164,
+          "diversification": 1.255
+        },
+        "discrimination_auc": {
+          "sophia": 0.7392,
+          "phronesis": 0.7361,
+          "exposure": 0.6936,
+          "track_record_rank": 0.6666,
+          "exit_predictor": 0.6999,
+          "capital_scale": 0.7394,
+          "deal_volume": 0.7066,
+          "diversification": 0.68
+        },
+        "emerging_auc": {
+          "sophia": 0.6542,
+          "phronesis": 0.6835,
+          "exposure": 0.577,
+          "track_record_rank": 0.5,
+          "exit_predictor": 0.5,
+          "capital_scale": 0.6773,
+          "deal_volume": 0.6165,
+          "diversification": 0.6231
+        },
+        "external_2026_auc": {
+          "sophia": 0.6182,
+          "phronesis": 0.6115,
+          "exposure": 0.6174,
+          "track_record_rank": 0.5739,
+          "exit_predictor": 0.5948,
+          "capital_scale": 0.6035,
+          "deal_volume": 0.62,
+          "diversification": 0.6476
+        },
+        "rolling_discrimination_auc": {
+          "sophia": 0.7392,
+          "phronesis": 0.7361,
+          "exposure": 0.6936
+        }
+      }
+    },
+    {
+      "epoch": "2011",
+      "label": "LojikVantage™ SOPHIA™ Composite Index",
+      "n_managers": null,
+      "n_emerging": null,
+      "emerging_share_pct": null,
+      "median_nominal_positions": null,
+      "median_true_independent_bets": null,
+      "median_redundancy_multiple": null,
+      "total_forward_breakout_exits": null,
+      "capital_deployed_total_usd": null,
+      "metrics": {
+        "rolling_discrimination_auc": {
+          "sophia": 0.7447,
+          "phronesis": 0.7376,
+          "exposure": 0.705
+        }
+      }
+    },
+    {
+      "epoch": "2012",
+      "label": "LojikVantage™ SOPHIA™ Composite Index",
+      "n_managers": 1439,
+      "n_emerging": 1002,
+      "emerging_share_pct": 69.63,
+      "median_nominal_positions": 14.0,
+      "median_true_independent_bets": 7.91,
+      "median_redundancy_multiple": 1.667,
+      "total_forward_breakout_exits": 183,
+      "capital_deployed_total_usd": 1206129256780,
+      "metrics": {
+        "breakout_lift": {
+          "sophia": 2.1352,
+          "phronesis": 2.155,
+          "exposure": 2.1924,
+          "track_record_rank": 1.7601,
+          "exit_predictor": 2.1023,
+          "capital_scale": 2.1144,
+          "deal_volume": 1.9053,
+          "diversification": 1.1359
+        },
+        "discrimination_auc": {
+          "sophia": 0.7556,
+          "phronesis": 0.7541,
+          "exposure": 0.7145,
+          "track_record_rank": 0.672,
+          "exit_predictor": 0.7092,
+          "capital_scale": 0.7911,
+          "deal_volume": 0.7118,
+          "diversification": 0.645
+        },
+        "emerging_auc": {
+          "sophia": 0.6835,
+          "phronesis": 0.7309,
+          "exposure": 0.5772,
+          "track_record_rank": 0.5,
+          "exit_predictor": 0.5,
+          "capital_scale": 0.7628,
+          "deal_volume": 0.5631,
+          "diversification": 0.5207
+        },
+        "external_2026_auc": {
+          "sophia": 0.611,
+          "phronesis": 0.6105,
+          "exposure": 0.6033,
+          "track_record_rank": 0.5449,
+          "exit_predictor": 0.5688,
+          "capital_scale": 0.6119,
+          "deal_volume": 0.628,
+          "diversification": 0.6642
+        },
+        "rolling_discrimination_auc": {
+          "sophia": 0.7556,
+          "phronesis": 0.7541,
+          "exposure": 0.7145
+        }
+      }
+    },
+    {
+      "epoch": "2015",
+      "label": "LojikVantage™ SOPHIA™ Composite Index",
+      "n_managers": null,
+      "n_emerging": null,
+      "emerging_share_pct": null,
+      "median_nominal_positions": null,
+      "median_true_independent_bets": null,
+      "median_redundancy_multiple": null,
+      "total_forward_breakout_exits": null,
+      "capital_deployed_total_usd": null,
+      "metrics": {
+        "discrimination_auc": {
+          "sophia": 0.733,
+          "phronesis": 0.7319,
+          "exposure": 0.6976,
+          "track_record_rank": 0.6422,
+          "exit_predictor": 0.6666,
+          "capital_scale": 0.7494,
+          "deal_volume": 0.7,
+          "diversification": 0.6548
+        },
+        "rolling_discrimination_auc": {
+          "sophia": 0.7339,
+          "phronesis": 0.7354,
+          "exposure": 0.7067
+        }
+      }
+    },
+    {
+      "epoch": "2024",
+      "label": "LojikVantage™ SOPHIA™ Composite Index",
+      "n_managers": null,
+      "n_emerging": null,
+      "emerging_share_pct": null,
+      "median_nominal_positions": null,
+      "median_true_independent_bets": null,
+      "median_redundancy_multiple": null,
+      "total_forward_breakout_exits": null,
+      "capital_deployed_total_usd": null,
+      "metrics": {
+        "lp_alpha_pp": {
+          "sophia": 11.2771,
+          "phronesis": 11.4973,
+          "track_record_rank": 11.4973
+        },
+        "lp_alpha_twr_pp": {
+          "sophia": 8.081,
+          "phronesis": 3.94,
+          "track_record_rank": 3.94
+        }
+      }
+    },
+    {
+      "epoch": "2026",
+      "label": "LojikVantage™ SOPHIA™ Composite Index",
+      "n_managers": null,
+      "n_emerging": null,
+      "emerging_share_pct": null,
+      "median_nominal_positions": null,
+      "median_true_independent_bets": null,
+      "median_redundancy_multiple": null,
+      "total_forward_breakout_exits": null,
+      "capital_deployed_total_usd": null,
+      "metrics": {
+        "external_2026_auc": {
+          "sophia": 0.5987,
+          "phronesis": 0.5953,
+          "exposure": 0.5993,
+          "track_record_rank": 0.5503,
+          "exit_predictor": 0.5726,
+          "capital_scale": 0.614,
+          "deal_volume": 0.6081,
+          "diversification": 0.6395
+        }
+      }
+    },
+    {
+      "epoch": "2026-Q4",
+      "label": "LojikVantage™ SOPHIA™ Composite Index",
+      "n_managers": null,
+      "n_emerging": null,
+      "emerging_share_pct": null,
+      "median_nominal_positions": null,
+      "median_true_independent_bets": null,
+      "median_redundancy_multiple": null,
+      "total_forward_breakout_exits": null,
+      "capital_deployed_total_usd": null,
+      "metrics": {
+        "external_2026_auc": {
+          "sophia": 0.5955,
+          "phronesis": 0.5953,
+          "exposure": 0.5716,
+          "track_record_rank": 0.5392,
+          "exit_predictor": 0.5574,
+          "capital_scale": 0.6052,
+          "deal_volume": 0.5819,
+          "diversification": 0.5965
+        }
+      }
+    }
+  ],
+  "calibration": {
+    "deciles": [
+      {
+        "decile": "D1",
+        "n": 790,
+        "breakout_probability": 0.0177,
+        "lift_vs_cohort": 0.1525,
+        "deal_share": 0.0025,
+        "mean_score_index": 0.0489
+      },
+      {
+        "decile": "D2",
+        "n": 790,
+        "breakout_probability": 0.0456,
+        "lift_vs_cohort": 0.3921,
+        "deal_share": 0.0068,
+        "mean_score_index": 0.0922
+      },
+      {
+        "decile": "D3",
+        "n": 790,
+        "breakout_probability": 0.0494,
+        "lift_vs_cohort": 0.4248,
+        "deal_share": 0.0051,
+        "mean_score_index": 0.1188
+      },
+      {
+        "decile": "D4",
+        "n": 790,
+        "breakout_probability": 0.0684,
+        "lift_vs_cohort": 0.5882,
+        "deal_share": 0.0076,
+        "mean_score_index": 0.1434
+      },
+      {
+        "decile": "D5",
+        "n": 790,
+        "breakout_probability": 0.1051,
+        "lift_vs_cohort": 0.904,
+        "deal_share": 0.011,
+        "mean_score_index": 0.1709
+      },
+      {
+        "decile": "D6",
+        "n": 789,
+        "breakout_probability": 0.1052,
+        "lift_vs_cohort": 0.9052,
+        "deal_share": 0.0096,
+        "mean_score_index": 0.209
+      },
+      {
+        "decile": "D7",
+        "n": 790,
+        "breakout_probability": 0.1215,
+        "lift_vs_cohort": 1.0456,
+        "deal_share": 0.0096,
+        "mean_score_index": 0.2754
+      },
+      {
+        "decile": "D8",
+        "n": 790,
+        "breakout_probability": 0.1367,
+        "lift_vs_cohort": 1.1763,
+        "deal_share": 0.0103,
+        "mean_score_index": 0.5046
+      },
+      {
+        "decile": "D9",
+        "n": 790,
+        "breakout_probability": 0.1848,
+        "lift_vs_cohort": 1.5902,
+        "deal_share": 0.0151,
+        "mean_score_index": 0.8528
+      },
+      {
+        "decile": "D10",
+        "n": 790,
+        "breakout_probability": 0.3278,
+        "lift_vs_cohort": 2.821,
+        "deal_share": 0.0207,
+        "mean_score_index": 1.6801
+      }
+    ],
+    "n_observations": 7899,
+    "monotonic": true,
+    "top_bottom_odds_ratio": 27.0633,
+    "top_bottom_risk_ratio": 18.5198
+  },
+  "pension_audit": {
+    "calstrs": {
+      "label": "CalSTRS · FYE June 2024 · Venture & Growth",
+      "n_partnerships": 25,
+      "vantage_net_irr_pct": 18.7225,
+      "baseline_net_irr_pct": 7.4454,
+      "vantage_net_tvpi": 2.1998,
+      "baseline_net_tvpi": 1.7174,
+      "vantage_net_dpi": 1.457,
+      "baseline_net_dpi": 1.0217,
+      "irr_alpha_pct": 11.2771
+    },
+    "calpers": {
+      "label": "CalPERS · June 2024 · Venture & Growth",
+      "n_partnerships": 15,
+      "vantage_1y_twr_pct": 11.9667,
+      "baseline_1y_twr_pct": 3.8857,
+      "vantage_3y_twr_pct": 5.0,
+      "baseline_3y_twr_pct": 20.0,
+      "vantage_ending_market_value_mm": 248.5429,
+      "baseline_ending_market_value_mm": 210.6375
+    }
+  },
+  "startup_audit": {
+    "n_startups": 14658,
+    "n_big_exits": 222,
+    "n_any_exits": 1256,
+    "base_rate_pct": 1.5145,
+    "auc_big_exit": 0.8195,
+    "auc_big_exit_ci": [
+      0.7942,
+      0.8434
+    ],
+    "top_decile_size": 1466,
+    "top_decile_hits": 105,
+    "top_decile_lift": 4.7291,
+    "reference_lift": 1.66,
+    "lift_multiple": 2.8488,
+    "track_record_baseline_lift": 3.2878,
+    "pre_window": {
+      "start": "2010-01-01",
+      "end": "2012-12-31"
+    },
+    "eval_window": {
+      "start": "2013-01-01",
+      "end": "2015-12-31"
+    },
+    "source": {
+      "artifact": "app/data/startup_edge_snapshot.json",
+      "data_version": "vx-2026.10.21-r1",
+      "generated_utc": "2026-10-21T20:30:12+00:00",
+      "cohort": 2012,
+      "pre_window": {
+        "start": "2010-01-01",
+        "end": "2012-12-31"
+      },
+      "eval_window": {
+        "start": "2013-01-01",
+        "end": "2015-12-31"
+      },
+      "big_exit_threshold_usd": 100000000,
+      "pinned": true,
+      "pinned_artifact": "reports/public_startup_audit_pinned.json",
+      "pinned_utc": "2026-10-21T20:30:12+00:00"
+    }
+  },
+  "overlap_detector": {
+    "max_multiple": 39.4926,
+    "examples": [
+      {
+        "name": "Versant Ventures",
+        "nominal_positions": 84,
+        "true_independent_bets": 3.5959,
+        "overlap_multiple": 23.3599
+      },
+      {
+        "name": "Alta Partners",
+        "nominal_positions": 83,
+        "true_independent_bets": 2.9587,
+        "overlap_multiple": 28.0532
+      },
+      {
+        "name": "Domain Associates",
+        "nominal_positions": 82,
+        "true_independent_bets": 2.4657,
+        "overlap_multiple": 33.2568
+      },
+      {
+        "name": "Sofinnova Ventures",
+        "nominal_positions": 73,
+        "true_independent_bets": 5.968,
+        "overlap_multiple": 12.2318
+      },
+      {
+        "name": "Orbimed Advisors",
+        "nominal_positions": 69,
+        "true_independent_bets": 2.225,
+        "overlap_multiple": 31.0111
+      },
+      {
+        "name": "Mpm Capital",
+        "nominal_positions": 69,
+        "true_independent_bets": 2.9231,
+        "overlap_multiple": 23.6052
+      },
+      {
+        "name": "Arch Venture Partners",
+        "nominal_positions": 69,
+        "true_independent_bets": 5.2444,
+        "overlap_multiple": 13.1569
+      },
+      {
+        "name": "Novartis Venture Fund",
+        "nominal_positions": 65,
+        "true_independent_bets": 1.6459,
+        "overlap_multiple": 39.4926
+      },
+      {
+        "name": "Sv Life Sciences",
+        "nominal_positions": 58,
+        "true_independent_bets": 2.5883,
+        "overlap_multiple": 22.4086
+      },
+      {
+        "name": "Johnson Johnson Development Corporation",
+        "nominal_positions": 58,
+        "true_independent_bets": 3.7487,
+        "overlap_multiple": 15.4718
+      }
+    ]
+  },
+  "blind_spot_managers": [
+    {
+      "name": "Tiger Global Management",
+      "universe_percentile": 99.7,
+      "top_share_pct": 0.3,
+      "alpha_score": 76.3,
+      "emerging_score": 69.49,
+      "competitor_zero_count": 2,
+      "competitor_percentiles": {
+        "track_record_rank": 0.0,
+        "exit_predictor": 0.0,
+        "capital_scale": 90.34,
+        "deal_volume": 79.15,
+        "diversification": 29.67
+      },
+      "nominal_positions": 34,
+      "true_independent_bets": 5.56,
+      "redundancy_multiple": 6.1155,
+      "regime": "ELEVATED COUPLING",
+      "prior_large_exits": 0,
+      "breakouts": [
+        {
+          "company": "Ganji",
+          "exit_date": "2015-04-17",
+          "value_usd": 446200000
+        },
+        {
+          "company": "Myntra",
+          "exit_date": "2014-05-22",
+          "value_usd": 300000000
+        }
+      ]
+    },
+    {
+      "name": "Atomico",
+      "universe_percentile": 94.21,
+      "top_share_pct": 5.79,
+      "alpha_score": 65.67,
+      "emerging_score": 68.45,
+      "competitor_zero_count": 2,
+      "competitor_percentiles": {
+        "track_record_rank": 0.0,
+        "exit_predictor": 0.0,
+        "capital_scale": 76.58,
+        "deal_volume": 81.03,
+        "diversification": 97.08
+      },
+      "nominal_positions": 37,
+      "true_independent_bets": 17.32,
+      "redundancy_multiple": 2.1366,
+      "regime": "OPTIMAL RESONANCE",
+      "prior_large_exits": 0,
+      "breakouts": [
+        {
+          "company": "Supercell",
+          "exit_date": "2013-10-21",
+          "value_usd": 1500000000
+        },
+        {
+          "company": "The Climate Corporation",
+          "exit_date": "2013-10-02",
+          "value_usd": 930000000
+        }
+      ]
+    },
+    {
+      "name": "SingTel Innov8",
+      "universe_percentile": 91.82,
+      "top_share_pct": 8.18,
+      "alpha_score": 63.93,
+      "emerging_score": 62.33,
+      "competitor_zero_count": 2,
+      "competitor_percentiles": {
+        "track_record_rank": 0.0,
+        "exit_predictor": 0.0,
+        "capital_scale": 64.42,
+        "deal_volume": 62.47,
+        "diversification": 44.54
+      },
+      "nominal_positions": 20,
+      "true_independent_bets": 7.5,
+      "redundancy_multiple": 2.6675,
+      "regime": "OPTIMAL RESONANCE",
+      "prior_large_exits": 0,
+      "breakouts": [
+        {
+          "company": "Maker Studios",
+          "exit_date": "2014-03-24",
+          "value_usd": 500000000
+        },
+        {
+          "company": "NEXAGE",
+          "exit_date": "2014-09-23",
+          "value_usd": 107500000
+        }
+      ]
+    },
+    {
+      "name": "Lowercase Capital",
+      "universe_percentile": 91.02,
+      "top_share_pct": 8.98,
+      "alpha_score": 63.38,
+      "emerging_score": 67.76,
+      "competitor_zero_count": 2,
+      "competitor_percentiles": {
+        "track_record_rank": 0.0,
+        "exit_predictor": 0.0,
+        "capital_scale": 85.68,
+        "deal_volume": 75.89,
+        "diversification": 89.16
+      },
+      "nominal_positions": 30,
+      "true_independent_bets": 16.47,
+      "redundancy_multiple": 1.8219,
+      "regime": "OPTIMAL RESONANCE",
+      "prior_large_exits": 0,
+      "breakouts": [
+        {
+          "company": "OpenDNS",
+          "exit_date": "2015-06-30",
+          "value_usd": 635000000
+        }
+      ]
+    }
+  ],
+  "blind_spot_startups": [
+    {
+      "name": "WhatsApp",
+      "sector": "Messaging",
+      "index_score": 58.42,
+      "signal": "RESONANT FIT",
+      "pre_exit_rank": 2057,
+      "exit_date": "2014-02-19",
+      "exit_value_usd": 19000000000,
+      "syndicate": [
+        "Sequoia Capital"
+      ]
+    },
+    {
+      "name": "Supercell",
+      "sector": "Games",
+      "index_score": 43.87,
+      "signal": "HIGH-EDGE FOLLOW-ON",
+      "pre_exit_rank": 5208,
+      "exit_date": "2013-10-21",
+      "exit_value_usd": 1500000000,
+      "syndicate": [
+        "Accel",
+        "Initial Capital",
+        "Lifeline Ventures",
+        "London Venture Partners"
+      ]
+    },
+    {
+      "name": "Tumblr",
+      "sector": "Blogging Platforms",
+      "index_score": 73.52,
+      "signal": "HIGH-EDGE FOLLOW-ON",
+      "pre_exit_rank": 146,
+      "exit_date": "2013-05-20",
+      "exit_value_usd": 1100000000,
+      "syndicate": [
+        "CrunchFund",
+        "DFJ Growth",
+        "Greylock Partners",
+        "Insight Venture Partners"
+      ]
+    },
+    {
+      "name": "Waze",
+      "sector": "Navigation",
+      "index_score": 70.76,
+      "signal": "RESONANT FIT",
+      "pre_exit_rank": 335,
+      "exit_date": "2013-06-11",
+      "exit_value_usd": 1100000000,
+      "syndicate": [
+        "Horizons Ventures",
+        "Kleiner Perkins Caufield & Byers",
+        "BlueRun Ventures",
+        "Magma Venture Partners"
+      ]
+    },
+    {
+      "name": "Twitch",
+      "sector": "Broadcasting",
+      "index_score": 53.78,
+      "signal": "RESONANT FIT",
+      "pre_exit_rank": 2976,
+      "exit_date": "2014-08-25",
+      "exit_value_usd": 970000000,
+      "syndicate": [
+        "Alsop Louie Partners",
+        "Bessemer Venture Partners",
+        "Draper Associates"
+      ]
+    },
+    {
+      "name": "Braintree",
+      "sector": "Accounting",
+      "index_score": 71.4,
+      "signal": "RESONANT FIT",
+      "pre_exit_rank": 282,
+      "exit_date": "2013-09-26",
+      "exit_value_usd": 800000000,
+      "syndicate": [
+        "Accel",
+        "Greycroft Partners",
+        "New Enterprise Associates",
+        "RRE Ventures"
+      ]
+    },
+    {
+      "name": "OpenDNS",
+      "sector": "Security",
+      "index_score": 60.87,
+      "signal": "RESONANT FIT",
+      "pre_exit_rank": 1610,
+      "exit_date": "2015-06-30",
+      "exit_value_usd": 635000000,
+      "syndicate": [
+        "Greylock Partners",
+        "Sequoia Capital"
+      ]
+    },
+    {
+      "name": "Maker Studios",
+      "sector": "Games",
+      "index_score": 66.34,
+      "signal": "HIGH-EDGE FOLLOW-ON",
+      "pre_exit_rank": 775,
+      "exit_date": "2014-03-24",
+      "exit_value_usd": 500000000,
+      "syndicate": [
+        "Daher Capital",
+        "Greycroft Partners",
+        "Time Warner Investments",
+        "Upfront Ventures"
+      ]
+    },
+    {
+      "name": "Myntra",
+      "sector": "E-Commerce",
+      "index_score": 57.08,
+      "signal": "HIGH-EDGE FOLLOW-ON",
+      "pre_exit_rank": 2309,
+      "exit_date": "2014-05-22",
+      "exit_value_usd": 300000000,
+      "syndicate": [
+        "IDG Ventures India",
+        "Tiger Global Management",
+        "Kalaari Capital"
+      ]
+    }
+  ],
+  "benchmarks": [
+    {
+      "key": "vantage_x_alpha",
+      "label": "VANTAGE-X Alpha Score(tm)",
+      "vendor": "VANTAGE-X(tm)",
+      "tone": "#22d3ee",
+      "is_vantage": true,
+      "breakout_lift": 2.0551,
+      "discrimination_auc": 0.733,
+      "emerging_auc": 0.6723,
+      "emerging_auc_defined": true,
+      "external_2026_auc": 0.5987
+    },
+    {
+      "key": "vantage_x_emerging",
+      "label": "Emerging Manager Conviction Score(tm)",
+      "vendor": "VANTAGE-X(tm)",
+      "tone": "#2dd4bf",
+      "is_vantage": true,
+      "breakout_lift": 2.1028,
+      "discrimination_auc": 0.7318,
+      "emerging_auc": 0.6995,
+      "emerging_auc_defined": true,
+      "external_2026_auc": 0.5953
+    },
+    {
+      "key": "track_record_rank",
+      "label": "Preqin / CEPRES Track-Record Rank",
+      "vendor": "Preqin · CEPRES · MSCI",
+      "tone": "#38bdf8",
+      "is_vantage": false,
+      "breakout_lift": 1.9224,
+      "discrimination_auc": 0.6422,
+      "emerging_auc": null,
+      "emerging_auc_defined": false,
+      "external_2026_auc": 0.5503
+    },
+    {
+      "key": "exit_predictor",
+      "label": "PitchBook Exit Predictor Benchmark",
+      "vendor": "PitchBook",
+      "tone": "#a78bfa",
+      "is_vantage": false,
+      "breakout_lift": 1.7191,
+      "discrimination_auc": 0.6666,
+      "emerging_auc": null,
+      "emerging_auc_defined": false,
+      "external_2026_auc": 0.5726
+    },
+    {
+      "key": "capital_scale",
+      "label": "PitchBook Capital Scale League",
+      "vendor": "PitchBook · NVCA",
+      "tone": "#f472b6",
+      "is_vantage": false,
+      "breakout_lift": 1.8292,
+      "discrimination_auc": 0.7494,
+      "emerging_auc": 0.7036,
+      "emerging_auc_defined": true,
+      "external_2026_auc": 0.614
+    },
+    {
+      "key": "deal_volume",
+      "label": "PitchBook Deal Volume League",
+      "vendor": "PitchBook",
+      "tone": "#fbbf24",
+      "is_vantage": false,
+      "breakout_lift": 1.4346,
+      "discrimination_auc": 0.7,
+      "emerging_auc": 0.6081,
+      "emerging_auc_defined": true,
+      "external_2026_auc": 0.6081
+    },
+    {
+      "key": "diversification",
+      "label": "Cobalt / MSCI Diversification Index",
+      "vendor": "Cobalt · MSCI",
+      "tone": "#34d399",
+      "is_vantage": false,
+      "breakout_lift": 1.0914,
+      "discrimination_auc": 0.6548,
+      "emerging_auc": 0.575,
+      "emerging_auc_defined": true,
+      "external_2026_auc": 0.6395
+    }
+  ],
+  "ledger_entries": [
+    {
+      "sequence": 1,
+      "masked_id": "2005",
+      "target_date": "2005-12-31",
+      "epoch": "2005",
+      "sealed_utc": "2026-10-21T18:27:26+00:00",
+      "payload_hash": "ce587291e101f715931e6394735fda1f25aa2101d1d7d0b0105ebab52873c621",
+      "previous_hash": "GENESIS",
+      "chain_hash": "1fa0062bfbe7ac1392d2bc4a96b123eee1765a011eae273b51f9145d1f88e313",
+      "predictions": [
+        {
+          "masked_id": "LJK-2005-001",
+          "method": "sophia",
+          "metric": "manager_breakout_lift",
+          "value": 2.0551,
+          "content_hash": "ba9596d3e4db06aabccb2a72487a2bc0f74448e7c193d79d02b57fdf1d873cbd",
+          "content_preimage": "LJK-2005-001|sophia|manager_breakout_lift|2.0551"
+        },
+        {
+          "masked_id": "LJK-2005-002",
+          "method": "phronesis",
+          "metric": "manager_breakout_lift",
+          "value": 2.1028,
+          "content_hash": "4fab9a403b5b97e4e6e411626a0739abcf21b25d15337a845b15e2b92c9762d5",
+          "content_preimage": "LJK-2005-002|phronesis|manager_breakout_lift|2.1028"
+        },
+        {
+          "masked_id": "LJK-2005-003",
+          "method": "emerging_manager_auc",
+          "metric": "zero_track_record_auc",
+          "value": 0.6995,
+          "content_hash": "66ba9222743051a843cd729db26b23524fe97b08d53ab72cf27b32cbfe93a4c7",
+          "content_preimage": "LJK-2005-003|emerging_manager_auc|zero_track_record_auc|0.6995"
+        }
+      ]
+    },
+    {
+      "sequence": 2,
+      "masked_id": "2007",
+      "target_date": "2007-12-31",
+      "epoch": "2007",
+      "sealed_utc": "2026-10-21T18:27:26+00:00",
+      "payload_hash": "309e007e8127b29c04c522810b8a2b1e332cc9e9ef56992b9167e0919b3e44aa",
+      "previous_hash": "1fa0062bfbe7ac1392d2bc4a96b123eee1765a011eae273b51f9145d1f88e313",
+      "chain_hash": "d625a6860a51de76fb0f4b37211acd732a0d93858553e1c9c231e460d230edfa",
+      "predictions": [
+        {
+          "masked_id": "LJK-2007-001",
+          "method": "sophia",
+          "metric": "manager_breakout_lift",
+          "value": 2.0551,
+          "content_hash": "b714a6d28dc4a79f8e4aa7a1c49fd6c51027b1de35ca8c44158c06c4d5569b27",
+          "content_preimage": "LJK-2007-001|sophia|manager_breakout_lift|2.0551"
+        },
+        {
+          "masked_id": "LJK-2007-002",
+          "method": "phronesis",
+          "metric": "manager_breakout_lift",
+          "value": 2.1028,
+          "content_hash": "786eeeff874af75ab2207d9840b3c41a9e8ec7b6341377217190c2db14bcbabe",
+          "content_preimage": "LJK-2007-002|phronesis|manager_breakout_lift|2.1028"
+        },
+        {
+          "masked_id": "LJK-2007-003",
+          "method": "emerging_manager_auc",
+          "metric": "zero_track_record_auc",
+          "value": 0.6995,
+          "content_hash": "04e6e58813fa99cf5d6aaf8b07f389eb571c3d20b15ef3f6e68a3830428f0e95",
+          "content_preimage": "LJK-2007-003|emerging_manager_auc|zero_track_record_auc|0.6995"
+        }
+      ]
+    },
+    {
+      "sequence": 3,
+      "masked_id": "2010",
+      "target_date": "2010-12-31",
+      "epoch": "2010",
+      "sealed_utc": "2026-10-21T18:27:26+00:00",
+      "payload_hash": "d987b9eeb2dae80a73df1e75320bb69fcf7972be03c52cb0d4cdf87bc59c083b",
+      "previous_hash": "d625a6860a51de76fb0f4b37211acd732a0d93858553e1c9c231e460d230edfa",
+      "chain_hash": "ba7a03b59e35f67aaba4d016419e48a148783941bdc11480169f2b2240c0484d",
+      "predictions": [
+        {
+          "masked_id": "LJK-2010-001",
+          "method": "sophia",
+          "metric": "manager_breakout_lift",
+          "value": 2.0551,
+          "content_hash": "f6621bc20ad1e854ea02caa12b0bece8a033be0925615c4c7b2c97d4b69da5f6",
+          "content_preimage": "LJK-2010-001|sophia|manager_breakout_lift|2.0551"
+        },
+        {
+          "masked_id": "LJK-2010-002",
+          "method": "phronesis",
+          "metric": "manager_breakout_lift",
+          "value": 2.1028,
+          "content_hash": "d6d60f05b250b3b469f1e404a994b5fd76f3147c14556236337ffd1c2fa11810",
+          "content_preimage": "LJK-2010-002|phronesis|manager_breakout_lift|2.1028"
+        },
+        {
+          "masked_id": "LJK-2010-003",
+          "method": "emerging_manager_auc",
+          "metric": "zero_track_record_auc",
+          "value": 0.6995,
+          "content_hash": "d2dc50d29244b8b26abd060e914cebeb8642d93bae7016cc278e73f2cd9328fe",
+          "content_preimage": "LJK-2010-003|emerging_manager_auc|zero_track_record_auc|0.6995"
+        }
+      ]
+    },
+    {
+      "sequence": 4,
+      "masked_id": "2012",
+      "target_date": "2012-12-31",
+      "epoch": "2012",
+      "sealed_utc": "2026-10-21T18:27:26+00:00",
+      "payload_hash": "f049ddc933d91d30b70e6c909c5aea6e2d902ec182a80eea1c81c32e05188b9b",
+      "previous_hash": "ba7a03b59e35f67aaba4d016419e48a148783941bdc11480169f2b2240c0484d",
+      "chain_hash": "3c5c21a67f7fead21a5bc173494a28e9a75f7ddd4b76a78d6b8a42e01d682245",
+      "predictions": [
+        {
+          "masked_id": "LJK-2012-001",
+          "method": "sophia",
+          "metric": "manager_breakout_lift",
+          "value": 2.1352,
+          "content_hash": "67363366188d60ae40ef0334f5d9ae41c71e095c5510f48d12ac3d67312f6cf9",
+          "content_preimage": "LJK-2012-001|sophia|manager_breakout_lift|2.1352"
+        },
+        {
+          "masked_id": "LJK-2012-002",
+          "method": "phronesis",
+          "metric": "manager_breakout_lift",
+          "value": 2.1028,
+          "content_hash": "3708cb2969a4cb1ec462274db83f203313c78c0503e5929920972cea63da7edb",
+          "content_preimage": "LJK-2012-002|phronesis|manager_breakout_lift|2.1028"
+        },
+        {
+          "masked_id": "LJK-2012-003",
+          "method": "emerging_manager_auc",
+          "metric": "zero_track_record_auc",
+          "value": 0.6995,
+          "content_hash": "08fe6ce5bf1c4ed742b6eef1bae04dc1e75958293f778cf41e1a8c9c53fd96d1",
+          "content_preimage": "LJK-2012-003|emerging_manager_auc|zero_track_record_auc|0.6995"
+        }
+      ]
+    },
+    {
+      "sequence": 5,
+      "masked_id": "2024-LP-AUDIT",
+      "target_date": "2024-06-30",
+      "epoch": "2024",
+      "sealed_utc": "2026-10-21T18:27:26+00:00",
+      "payload_hash": "16404d9a6c7d0ea23bd40713b08e2b26ceb332cf1915fb39bf6e6b8df15ed78c",
+      "previous_hash": "3c5c21a67f7fead21a5bc173494a28e9a75f7ddd4b76a78d6b8a42e01d682245",
+      "chain_hash": "0cfc2bce1c91d87e71c35a32256b4542b057d1f2b475e1e52001f3e4218f9839",
+      "predictions": [
+        {
+          "masked_id": "LJK-2024-001",
+          "method": "calstrs_net_irr_above",
+          "metric": "net_irr_pct",
+          "value": 18.7225,
+          "content_hash": "2a3f3f2119b16eee9630df3c3a8a39d72e6f1095790294063f2b38071447c53b",
+          "content_preimage": "LJK-2024-001|calstrs_net_irr_above|net_irr_pct|18.7225"
+        },
+        {
+          "masked_id": "LJK-2024-002",
+          "method": "calstrs_net_irr_below",
+          "metric": "net_irr_pct",
+          "value": 7.4454,
+          "content_hash": "0ade2344742052905aa1e9a0d4384db34fa0ed0c3b7ce424b7751c5f1a48dd94",
+          "content_preimage": "LJK-2024-002|calstrs_net_irr_below|net_irr_pct|7.4454"
+        },
+        {
+          "masked_id": "LJK-2024-003",
+          "method": "calstrs_net_tvpi_above",
+          "metric": "net_tvpi",
+          "value": 2.1998,
+          "content_hash": "8d02470566002d35b32a79ca65dfcea25b7bc34aa8d64b93f5dff9b55592f679",
+          "content_preimage": "LJK-2024-003|calstrs_net_tvpi_above|net_tvpi|2.1998"
+        }
+      ]
+    },
+    {
+      "sequence": 6,
+      "masked_id": "2026-Q4-LIVE-SEALED",
+      "target_date": "2026-10-21",
+      "epoch": "2026-Q4",
+      "sealed_utc": "2026-10-21T18:27:26+00:00",
+      "payload_hash": "70aa5e646a6f1f5fad640b3150a67b8726411f68f72a30ddc0eda10c31101a6f",
+      "previous_hash": "0cfc2bce1c91d87e71c35a32256b4542b057d1f2b475e1e52001f3e4218f9839",
+      "chain_hash": "172422be3351cf43031f7e2211ee0ecb064f9712e3caaf9a7a32efea95d61e88",
+      "predictions": [
+        {
+          "masked_id": "LJK-2026-Q4-001",
+          "method": "sophia",
+          "metric": "external_auc",
+          "value": 0.5987,
+          "content_hash": "a83b39ca1233bbd90fb7f53f8bca7d8a78190009332f787d7595f02c637aebbb",
+          "content_preimage": "LJK-2026-Q4-001|sophia|external_auc|0.5987"
+        },
+        {
+          "masked_id": "LJK-2026-Q4-002",
+          "method": "phronesis",
+          "metric": "external_auc",
+          "value": 0.5953,
+          "content_hash": "93de36084febe042ace67c853bd397715a6edf091e5394021ec1413600d67520",
+          "content_preimage": "LJK-2026-Q4-002|phronesis|external_auc|0.5953"
+        },
+        {
+          "masked_id": "LJK-2026-Q4-003",
+          "method": "arche_startup",
+          "metric": "startup_external_auc",
+          "value": 0.8195,
+          "content_hash": "d037d40a072b37f1f9c24fb529d6899b2b984f3b11221b09241dc59d007c8a41",
+          "content_preimage": "LJK-2026-Q4-003|arche_startup|startup_external_auc|0.8195"
+        }
+      ]
+    },
+    {
+      "sequence": 7,
+      "masked_id": "2027-ROLLING-SCHEDULE",
+      "target_date": "2027-06-30",
+      "epoch": "2027",
+      "sealed_utc": "2026-10-21T18:27:26+00:00",
+      "payload_hash": "b2fae99e11fa7e54d6a5481c229cea675199ad60236a89228a89c7490d43ed64",
+      "previous_hash": "172422be3351cf43031f7e2211ee0ecb064f9712e3caaf9a7a32efea95d61e88",
+      "chain_hash": "e2b9123ad0f89f68d6dc919d5785d021b75c354a80af206a78ab298def49fccd",
+      "predictions": [
+        {
+          "masked_id": "LJK-2027-001",
+          "method": "sophia",
+          "metric": "external_auc_2027",
+          "value": 0.5987,
+          "content_hash": "377695576c65b5858de180a3abdcc3d144cca511ce28a1140b5124028ceeb7f5",
+          "content_preimage": "LJK-2027-001|sophia|external_auc_2027|0.5987"
+        },
+        {
+          "masked_id": "LJK-2027-002",
+          "method": "phronesis",
+          "metric": "external_auc_2027",
+          "value": 0.5953,
+          "content_hash": "a65073ee46b0eb6e8e944fc79470c49b2989a005741c858d8703385ca34c80e2",
+          "content_preimage": "LJK-2027-002|phronesis|external_auc_2027|0.5953"
+        },
+        {
+          "masked_id": "LJK-2027-003",
+          "method": "arche",
+          "metric": "startup_external_auc_2027",
+          "value": 0.8195,
+          "content_hash": "295e07f60f1f78d37526af0df4baed87d090b70f17b88341a5a7d7fff02a6025",
+          "content_preimage": "LJK-2027-003|arche|startup_external_auc_2027|0.8195"
+        }
+      ]
+    }
+  ],
+  "sealed_picks": [
+    {
+      "masked_id": "LJK-2026-M01",
+      "method": "SOPHIA",
+      "score": 98.4,
+      "status": "ACTIVE",
+      "display": "[SEALED ID: LJK-2026-M01 | SOPHIA: 98.4 | Status: ACTIVE]",
+      "content_hash": "fd66f32d4eae3173652d8c7f5507b59a9c9b81b4965b75d11052c4257b0c5186",
+      "content_preimage": "LJK-2026-M01|SOPHIA|98.4|ACTIVE"
+    },
+    {
+      "masked_id": "LJK-2026-S01",
+      "method": "ARCHE",
+      "score": 99.1,
+      "status": "ACTIVE",
+      "display": "[SEALED ID: LJK-2026-S01 | ARCHE: 99.1 | Status: ACTIVE]",
+      "content_hash": "c6f825df2bdc00e89f16d52a1bc0709c9dc727983d35747b1d71b545a2ca552f",
+      "content_preimage": "LJK-2026-S01|ARCHE|99.1|ACTIVE"
+    }
+  ],
+  "verifier_samples": [
+    {
+      "label": "Batch #1 payload - 2005",
+      "preimage": "{\"epoch\":\"2005\",\"masked_id\":\"2005\",\"predictions\":[{\"content_hash\":\"ba9596d3e4db06aabccb2a72487a2bc0f74448e7c193d79d02b57fdf1d873cbd\",\"content_preimage\":\"LJK-2005-001|sophia|manager_breakout_lift|2.0551\",\"masked_id\":\"LJK-2005-001\",\"method\":\"sophia\",\"metric\":\"manager_breakout_lift\",\"value\":2.0551},{\"content_hash\":\"4fab9a403b5b97e4e6e411626a0739abcf21b25d15337a845b15e2b92c9762d5\",\"content_preimage\":\"LJK-2005-002|phronesis|manager_breakout_lift|2.1028\",\"masked_id\":\"LJK-2005-002\",\"method\":\"phronesis\",\"metric\":\"manager_breakout_lift\",\"value\":2.1028},{\"content_hash\":\"66ba9222743051a843cd729db26b23524fe97b08d53ab72cf27b32cbfe93a4c7\",\"content_preimage\":\"LJK-2005-003|emerging_manager_auc|zero_track_record_auc|0.6995\",\"masked_id\":\"LJK-2005-003\",\"method\":\"emerging_manager_auc\",\"metric\":\"zero_track_record_auc\",\"value\":0.6995}],\"target_date\":\"2005-12-31\"}",
+      "hash": "ce587291e101f715931e6394735fda1f25aa2101d1d7d0b0105ebab52873c621",
+      "kind": "batch payload"
+    },
+    {
+      "label": "Batch #2 payload - 2007",
+      "preimage": "{\"epoch\":\"2007\",\"masked_id\":\"2007\",\"predictions\":[{\"content_hash\":\"b714a6d28dc4a79f8e4aa7a1c49fd6c51027b1de35ca8c44158c06c4d5569b27\",\"content_preimage\":\"LJK-2007-001|sophia|manager_breakout_lift|2.0551\",\"masked_id\":\"LJK-2007-001\",\"method\":\"sophia\",\"metric\":\"manager_breakout_lift\",\"value\":2.0551},{\"content_hash\":\"786eeeff874af75ab2207d9840b3c41a9e8ec7b6341377217190c2db14bcbabe\",\"content_preimage\":\"LJK-2007-002|phronesis|manager_breakout_lift|2.1028\",\"masked_id\":\"LJK-2007-002\",\"method\":\"phronesis\",\"metric\":\"manager_breakout_lift\",\"value\":2.1028},{\"content_hash\":\"04e6e58813fa99cf5d6aaf8b07f389eb571c3d20b15ef3f6e68a3830428f0e95\",\"content_preimage\":\"LJK-2007-003|emerging_manager_auc|zero_track_record_auc|0.6995\",\"masked_id\":\"LJK-2007-003\",\"method\":\"emerging_manager_auc\",\"metric\":\"zero_track_record_auc\",\"value\":0.6995}],\"target_date\":\"2007-12-31\"}",
+      "hash": "309e007e8127b29c04c522810b8a2b1e332cc9e9ef56992b9167e0919b3e44aa",
+      "kind": "batch payload"
+    },
+    {
+      "label": "Batch #3 payload - 2010",
+      "preimage": "{\"epoch\":\"2010\",\"masked_id\":\"2010\",\"predictions\":[{\"content_hash\":\"f6621bc20ad1e854ea02caa12b0bece8a033be0925615c4c7b2c97d4b69da5f6\",\"content_preimage\":\"LJK-2010-001|sophia|manager_breakout_lift|2.0551\",\"masked_id\":\"LJK-2010-001\",\"method\":\"sophia\",\"metric\":\"manager_breakout_lift\",\"value\":2.0551},{\"content_hash\":\"d6d60f05b250b3b469f1e404a994b5fd76f3147c14556236337ffd1c2fa11810\",\"content_preimage\":\"LJK-2010-002|phronesis|manager_breakout_lift|2.1028\",\"masked_id\":\"LJK-2010-002\",\"method\":\"phronesis\",\"metric\":\"manager_breakout_lift\",\"value\":2.1028},{\"content_hash\":\"d2dc50d29244b8b26abd060e914cebeb8642d93bae7016cc278e73f2cd9328fe\",\"content_preimage\":\"LJK-2010-003|emerging_manager_auc|zero_track_record_auc|0.6995\",\"masked_id\":\"LJK-2010-003\",\"method\":\"emerging_manager_auc\",\"metric\":\"zero_track_record_auc\",\"value\":0.6995}],\"target_date\":\"2010-12-31\"}",
+      "hash": "d987b9eeb2dae80a73df1e75320bb69fcf7972be03c52cb0d4cdf87bc59c083b",
+      "kind": "batch payload"
+    },
+    {
+      "label": "Batch #4 payload - 2012",
+      "preimage": "{\"epoch\":\"2012\",\"masked_id\":\"2012\",\"predictions\":[{\"content_hash\":\"67363366188d60ae40ef0334f5d9ae41c71e095c5510f48d12ac3d67312f6cf9\",\"content_preimage\":\"LJK-2012-001|sophia|manager_breakout_lift|2.1352\",\"masked_id\":\"LJK-2012-001\",\"method\":\"sophia\",\"metric\":\"manager_breakout_lift\",\"value\":2.1352},{\"content_hash\":\"3708cb2969a4cb1ec462274db83f203313c78c0503e5929920972cea63da7edb\",\"content_preimage\":\"LJK-2012-002|phronesis|manager_breakout_lift|2.1028\",\"masked_id\":\"LJK-2012-002\",\"method\":\"phronesis\",\"metric\":\"manager_breakout_lift\",\"value\":2.1028},{\"content_hash\":\"08fe6ce5bf1c4ed742b6eef1bae04dc1e75958293f778cf41e1a8c9c53fd96d1\",\"content_preimage\":\"LJK-2012-003|emerging_manager_auc|zero_track_record_auc|0.6995\",\"masked_id\":\"LJK-2012-003\",\"method\":\"emerging_manager_auc\",\"metric\":\"zero_track_record_auc\",\"value\":0.6995}],\"target_date\":\"2012-12-31\"}",
+      "hash": "f049ddc933d91d30b70e6c909c5aea6e2d902ec182a80eea1c81c32e05188b9b",
+      "kind": "batch payload"
+    },
+    {
+      "label": "Batch #5 payload - 2024-LP-AUDIT",
+      "preimage": "{\"epoch\":\"2024\",\"masked_id\":\"2024-LP-AUDIT\",\"predictions\":[{\"content_hash\":\"2a3f3f2119b16eee9630df3c3a8a39d72e6f1095790294063f2b38071447c53b\",\"content_preimage\":\"LJK-2024-001|calstrs_net_irr_above|net_irr_pct|18.7225\",\"masked_id\":\"LJK-2024-001\",\"method\":\"calstrs_net_irr_above\",\"metric\":\"net_irr_pct\",\"value\":18.7225},{\"content_hash\":\"0ade2344742052905aa1e9a0d4384db34fa0ed0c3b7ce424b7751c5f1a48dd94\",\"content_preimage\":\"LJK-2024-002|calstrs_net_irr_below|net_irr_pct|7.4454\",\"masked_id\":\"LJK-2024-002\",\"method\":\"calstrs_net_irr_below\",\"metric\":\"net_irr_pct\",\"value\":7.4454},{\"content_hash\":\"8d02470566002d35b32a79ca65dfcea25b7bc34aa8d64b93f5dff9b55592f679\",\"content_preimage\":\"LJK-2024-003|calstrs_net_tvpi_above|net_tvpi|2.1998\",\"masked_id\":\"LJK-2024-003\",\"method\":\"calstrs_net_tvpi_above\",\"metric\":\"net_tvpi\",\"value\":2.1998}],\"target_date\":\"2024-06-30\"}",
+      "hash": "16404d9a6c7d0ea23bd40713b08e2b26ceb332cf1915fb39bf6e6b8df15ed78c",
+      "kind": "batch payload"
+    },
+    {
+      "label": "Batch #6 payload - 2026-Q4-LIVE-SEALED",
+      "preimage": "{\"epoch\":\"2026-Q4\",\"masked_id\":\"2026-Q4-LIVE-SEALED\",\"predictions\":[{\"content_hash\":\"a83b39ca1233bbd90fb7f53f8bca7d8a78190009332f787d7595f02c637aebbb\",\"content_preimage\":\"LJK-2026-Q4-001|sophia|external_auc|0.5987\",\"masked_id\":\"LJK-2026-Q4-001\",\"method\":\"sophia\",\"metric\":\"external_auc\",\"value\":0.5987},{\"content_hash\":\"93de36084febe042ace67c853bd397715a6edf091e5394021ec1413600d67520\",\"content_preimage\":\"LJK-2026-Q4-002|phronesis|external_auc|0.5953\",\"masked_id\":\"LJK-2026-Q4-002\",\"method\":\"phronesis\",\"metric\":\"external_auc\",\"value\":0.5953},{\"content_hash\":\"d037d40a072b37f1f9c24fb529d6899b2b984f3b11221b09241dc59d007c8a41\",\"content_preimage\":\"LJK-2026-Q4-003|arche_startup|startup_external_auc|0.8195\",\"masked_id\":\"LJK-2026-Q4-003\",\"method\":\"arche_startup\",\"metric\":\"startup_external_auc\",\"value\":0.8195}],\"target_date\":\"2026-10-21\"}",
+      "hash": "70aa5e646a6f1f5fad640b3150a67b8726411f68f72a30ddc0eda10c31101a6f",
+      "kind": "batch payload"
+    },
+    {
+      "label": "Batch #7 payload - 2027-ROLLING-SCHEDULE",
+      "preimage": "{\"epoch\":\"2027\",\"masked_id\":\"2027-ROLLING-SCHEDULE\",\"predictions\":[{\"content_hash\":\"377695576c65b5858de180a3abdcc3d144cca511ce28a1140b5124028ceeb7f5\",\"content_preimage\":\"LJK-2027-001|sophia|external_auc_2027|0.5987\",\"masked_id\":\"LJK-2027-001\",\"method\":\"sophia\",\"metric\":\"external_auc_2027\",\"value\":0.5987},{\"content_hash\":\"a65073ee46b0eb6e8e944fc79470c49b2989a005741c858d8703385ca34c80e2\",\"content_preimage\":\"LJK-2027-002|phronesis|external_auc_2027|0.5953\",\"masked_id\":\"LJK-2027-002\",\"method\":\"phronesis\",\"metric\":\"external_auc_2027\",\"value\":0.5953},{\"content_hash\":\"295e07f60f1f78d37526af0df4baed87d090b70f17b88341a5a7d7fff02a6025\",\"content_preimage\":\"LJK-2027-003|arche|startup_external_auc_2027|0.8195\",\"masked_id\":\"LJK-2027-003\",\"method\":\"arche\",\"metric\":\"startup_external_auc_2027\",\"value\":0.8195}],\"target_date\":\"2027-06-30\"}",
+      "hash": "b2fae99e11fa7e54d6a5481c229cea675199ad60236a89228a89c7490d43ed64",
+      "kind": "batch payload"
+    },
+    {
+      "label": "Sealed live pick - LJK-2026-M01",
+      "preimage": "LJK-2026-M01|SOPHIA|98.4|ACTIVE",
+      "hash": "fd66f32d4eae3173652d8c7f5507b59a9c9b81b4965b75d11052c4257b0c5186",
+      "kind": "sealed pick"
+    },
+    {
+      "label": "Sealed live pick - LJK-2026-S01",
+      "preimage": "LJK-2026-S01|ARCHE|99.1|ACTIVE",
+      "hash": "c6f825df2bdc00e89f16d52a1bc0709c9dc727983d35747b1d71b545a2ca552f",
+      "kind": "sealed pick"
+    }
+  ],
+  "zero_lookahead": {
+    "guarded": true,
+    "epoch_count": 15,
+    "rule": "Every epoch is scored on a frozen vintage whose data window ends on or before the epoch cutoff, then graded against outcomes realised strictly after that cutoff.",
+    "epochs": [
+      {
+        "epoch": "2002",
+        "cutoff_date": "2002-12-31",
+        "data_asof": "2002-12-31",
+        "graded_after": "out-of-sample forward window"
+      },
+      {
+        "epoch": "2003",
+        "cutoff_date": "2003-12-31",
+        "data_asof": "2003-12-31",
+        "graded_after": "out-of-sample forward window"
+      },
+      {
+        "epoch": "2004",
+        "cutoff_date": "2004-12-31",
+        "data_asof": "2004-12-31",
+        "graded_after": "out-of-sample forward window"
+      },
+      {
+        "epoch": "2005",
+        "cutoff_date": "2005-12-31",
+        "data_asof": "2005-12-31",
+        "graded_after": "out-of-sample forward window"
+      },
+      {
+        "epoch": "2006",
+        "cutoff_date": "2006-12-31",
+        "data_asof": "2006-12-31",
+        "graded_after": "out-of-sample forward window"
+      },
+      {
+        "epoch": "2007",
+        "cutoff_date": "2007-12-31",
+        "data_asof": "2007-12-31",
+        "graded_after": "out-of-sample forward window"
+      },
+      {
+        "epoch": "2008",
+        "cutoff_date": "2008-12-31",
+        "data_asof": "2008-12-31",
+        "graded_after": "out-of-sample forward window"
+      },
+      {
+        "epoch": "2009",
+        "cutoff_date": "2009-12-31",
+        "data_asof": "2009-12-31",
+        "graded_after": "out-of-sample forward window"
+      },
+      {
+        "epoch": "2010",
+        "cutoff_date": "2010-12-31",
+        "data_asof": "2010-12-31",
+        "graded_after": "out-of-sample forward window"
+      },
+      {
+        "epoch": "2011",
+        "cutoff_date": "2011-12-31",
+        "data_asof": "2011-12-31",
+        "graded_after": "out-of-sample forward window"
+      },
+      {
+        "epoch": "2012",
+        "cutoff_date": "2012-12-31",
+        "data_asof": "2012-12-31",
+        "graded_after": "out-of-sample forward window"
+      },
+      {
+        "epoch": "2015",
+        "cutoff_date": "2015-12-31",
+        "data_asof": "2015-12-31",
+        "graded_after": "out-of-sample forward window"
+      },
+      {
+        "epoch": "2024",
+        "cutoff_date": "2024-12-31",
+        "data_asof": "2024-12-31",
+        "graded_after": "out-of-sample forward window"
+      },
+      {
+        "epoch": "2026",
+        "cutoff_date": "2026-12-31",
+        "data_asof": "2026-12-31",
+        "graded_after": "out-of-sample forward window"
+      },
+      {
+        "epoch": "2026-Q4",
+        "cutoff_date": "2026-Q4-12-31",
+        "data_asof": "2026-Q4-12-31",
+        "graded_after": "out-of-sample forward window"
+      }
+    ]
+  }
+}

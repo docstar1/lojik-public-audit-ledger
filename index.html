@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LojikVantage&trade; | by LojikX&trade; &mdash; ALETHEIA&trade; Public Verification &amp; Performance Ledger</title>
+<meta name="description" content="ALETHEIA&trade; public cryptographic proof ledger and performance scoreboard for LojikVantage&trade; by LojikX&trade;. Verify every SHA-256 hash in your browser." />
+<meta name="theme-color" content="#04060c" />
+<meta property="og:title" content="ALETHEIA&trade; Public Verification &amp; Performance Ledger" />
+<meta property="og:description" content="Seven live robustness checks, sealed SHA-256 prediction batches, and a public calibration curve anyone can verify." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#04060c; --bg2:#070b14; --panel:#0b1120; --panel2:#0e1626; --line:rgba(148,163,184,.16);
+    --cyan:#22d3ee; --teal:#2dd4bf; --violet:#a78bfa; --pink:#f472b6; --amber:#fbbf24;
+    --green:#34d399; --rose:#fb7185; --text:#dce7f5; --muted:#8494ac; --dim:#5f6f88;
+    --radius:14px; --shadow:0 18px 50px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; color:var(--text); line-height:1.55; font-size:14px;
+    font-family:"Inter","Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    background:
+      radial-gradient(1100px 620px at 12% -8%, rgba(34,211,238,.13), transparent 62%),
+      radial-gradient(900px 520px at 92% 4%, rgba(167,139,250,.10), transparent 60%),
+      var(--bg);
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--cyan);}
+  .wrap{max-width:1280px;margin:0 auto;padding:26px 18px 80px;}
+  header.top{border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:22px;
+    display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;}
+  h1{margin:0;font-size:clamp(19px,2.6vw,27px);letter-spacing:.01em;}
+  h1 .accent{color:var(--cyan);}
+  .tagline{color:var(--muted);font-size:11px;letter-spacing:.17em;text-transform:uppercase;margin-top:7px;}
+  .nav{display:flex;gap:8px;flex-wrap:wrap;}
+  .nav a{font-size:11px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted);
+    border:1px solid var(--line);border-radius:999px;padding:6px 12px;background:rgba(148,163,184,.05);}
+  .nav a:hover{color:var(--cyan);border-color:rgba(34,211,238,.5);}
+  h2{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#cfe2f5;margin:34px 0 12px;
+    display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+  h2::before{content:"";width:3px;height:15px;background:linear-gradient(180deg,var(--cyan),var(--violet));border-radius:2px;}
+  h3{font-size:13px;margin:0 0 4px;}
+  p.lead{color:var(--muted);max-width:96ch;margin:0 0 16px;}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;}
+  .muted{color:var(--muted);}
+  .n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .short{color:var(--muted);}
+
+  /* help bubble */
+  .q{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;
+    border:1px solid rgba(34,211,238,.65);color:var(--cyan);font-size:10.5px;font-weight:700;cursor:help;
+    position:relative;flex:0 0 auto;vertical-align:middle;background:rgba(34,211,238,.07);outline:none;}
+  .q::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%) translateY(4px);
+    width:290px;padding:11px 13px;border-radius:10px;background:#0c1524;color:#d9e6f6;border:1px solid rgba(34,211,238,.4);
+    box-shadow:var(--shadow);font-size:11.5px;line-height:1.5;font-weight:400;letter-spacing:0;text-align:left;
+    opacity:0;pointer-events:none;transition:opacity .16s ease,transform .16s ease;z-index:60;}
+  .q::before{content:"";position:absolute;left:50%;bottom:calc(100% + 4px);transform:translateX(-50%);
+    border:6px solid transparent;border-top-color:rgba(34,211,238,.5);opacity:0;transition:opacity .16s;z-index:61;}
+  .q:hover::after,.q:focus::after{opacity:1;transform:translateX(-50%) translateY(0);}
+  .q:hover::before,.q:focus::before{opacity:1;}
+  @media (max-width:620px){ .q::after{left:0;transform:translateY(4px);width:230px;} .q::before{left:12px;transform:none;} }
+
+  /* health banner */
+  .banner{border:1px solid rgba(52,211,153,.42);border-radius:var(--radius);padding:16px 18px;
+    background:linear-gradient(140deg,rgba(52,211,153,.14),rgba(52,211,153,.03));margin-bottom:14px;}
+  .banner.warn{border-color:rgba(251,191,36,.5);background:linear-gradient(140deg,rgba(251,191,36,.14),rgba(251,191,36,.03));}
+  .banner-title{font-size:clamp(14px,2.1vw,18px);font-weight:700;color:#6ee7b7;letter-spacing:.01em;
+    display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+  .banner.warn .banner-title{color:#fcd34d;}
+  .banner-sub{color:var(--muted);font-size:11px;margin-top:5px;}
+  .dot-live{display:inline-block;width:9px;height:9px;border-radius:50%;background:#34d399;box-shadow:0 0 0 4px rgba(52,211,153,.18);}
+  .chips{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:9px;
+    grid-template-columns:repeat(auto-fit,minmax(272px,1fr));}
+  .chip{display:flex;align-items:flex-start;gap:9px;border:1px solid rgba(52,211,153,.26);border-radius:11px;
+    padding:9px 11px;background:rgba(52,211,153,.06);font-size:11.5px;}
+  .chip-id{flex:0 0 auto;width:19px;height:19px;border-radius:50%;background:rgba(52,211,153,.22);color:#6ee7b7;
+    display:inline-flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;}
+  .chip-name{flex:1 1 auto;color:#cfeede;}
+  .chip .q{border-color:rgba(52,211,153,.6);color:#6ee7b7;background:rgba(52,211,153,.1);}
+
+  /* kpi */
+  .kpis{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));}
+  .kpi{border:1px solid var(--line);border-radius:var(--radius);padding:16px 17px;
+    background:linear-gradient(160deg,rgba(34,211,238,.07),var(--panel));box-shadow:var(--shadow);}
+  .kpi-top{display:flex;align-items:center;gap:8px;justify-content:space-between;}
+  .kpi-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+  .kpi-value{font-size:clamp(28px,4.4vw,40px);font-weight:800;letter-spacing:-.02em;margin:8px 0 2px;
+    background:linear-gradient(100deg,#e8f6ff,#22d3ee 55%,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .kpi-sub{font-size:11.5px;color:#b8c8dc;}
+  .kpi-cmp{margin-top:9px;font-size:11px;color:var(--muted);border-top:1px dashed rgba(148,163,184,.22);padding-top:8px;}
+
+  /* cards + charts */
+  .panel{border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);padding:16px 18px;margin-bottom:14px;}
+  .panel-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start;margin-bottom:12px;}
+  .panel-head .sub{font-size:11px;color:var(--muted);max-width:70ch;}
+  .chart-box{position:relative;width:100%;height:440px;}
+  .chart-box.tall{height:560px;}
+  .chart-box.short{height:380px;}
+
+  /* trophy wall */
+  .grid3{display:grid;gap:13px;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));}
+  .trophy,.startup{border:1px solid var(--line);border-radius:13px;padding:14px 15px;background:var(--panel2);
+    position:relative;overflow:hidden;}
+  .trophy::after{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:linear-gradient(180deg,var(--cyan),var(--violet));}
+  .startup::after{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:linear-gradient(180deg,var(--amber),var(--pink));}
+  .trophy-head{display:flex;align-items:center;gap:8px;justify-content:space-between;}
+  .trophy-name{font-weight:700;font-size:14px;}
+  .trophy-rank{font-size:12px;color:#8be9c4;margin-top:8px;}
+  .trophy-exit{font-size:12.5px;color:#d8e5f4;margin-top:5px;}
+  .trophy-exit b{color:var(--amber);}
+  .trophy-meta{font-size:10.5px;color:var(--dim);margin-top:7px;}
+  .startup-value{font-size:20px;font-weight:700;margin-top:7px;color:#ffd88a;}
+
+  /* tables */
+  .scroll{overflow:auto;border:1px solid var(--line);border-radius:11px;}
+  table{width:100%;border-collapse:collapse;font-size:11.5px;min-width:560px;}
+  thead th{position:sticky;top:0;background:#0a1120;color:var(--muted);font-weight:600;font-size:9.5px;
+    letter-spacing:.12em;text-transform:uppercase;text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);z-index:2;}
+  tbody td{padding:8px 12px;border-bottom:1px solid rgba(148,163,184,.07);}
+  tbody tr:hover td{background:rgba(34,211,238,.045);}
+  .blind{color:var(--rose);}
+
+  /* verifier */
+  .verifier{border:1px solid rgba(34,211,238,.28);border-radius:var(--radius);background:linear-gradient(160deg,rgba(34,211,238,.07),var(--panel));padding:16px 18px;}
+  .vgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+  select,textarea,input[type=text]{width:100%;background:#070c16;color:var(--text);border:1px solid var(--line);
+    border-radius:10px;padding:9px 11px;font-size:11.5px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+  textarea{min-height:96px;resize:vertical;line-height:1.5;}
+  label.lab{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+  button{background:linear-gradient(100deg,var(--cyan),#38bdf8);color:#04121a;border:0;border-radius:10px;
+    padding:10px 16px;font-weight:700;font-size:12px;cursor:pointer;letter-spacing:.02em;}
+  button:hover{filter:brightness(1.08);}
+  button.ghost{background:transparent;color:var(--cyan);border:1px solid rgba(34,211,238,.4);}
+  .vout{margin-top:12px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;
+    border:1px solid var(--line);border-radius:10px;padding:11px 12px;background:#070c16;word-break:break-all;}
+  .verdict{font-weight:700;}
+  .verdict.ok{color:#6ee7b7;}
+  .verdict.bad{color:#fb7185;}
+  .pick{border:1px solid var(--line);border-radius:11px;padding:10px 12px;margin-bottom:9px;background:#080d18;}
+  .pick code{display:block;color:#8be9c4;font-size:11px;word-break:break-all;}
+  .pick-hash{display:block;color:var(--dim);font-size:10px;margin-top:5px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+
+  .note{border:1px dashed rgba(148,163,184,.28);border-radius:11px;padding:11px 13px;font-size:11px;color:var(--muted);}
+  footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:11px;}
+  footer a{color:var(--muted);}
+  @media (max-width:700px){ .chart-box{height:360px;} .chart-box.tall{height:520px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>LojikVantage<span class="accent">&trade;</span> | by LojikX<span class="accent">&trade;</span></h1>
+      <div class="tagline">ALETHEIA&trade; Public Verification &amp; Performance Ledger</div>
+    </div>
+    <nav class="nav">
+      <a href="#health">Health</a>
+      <a href="#overview">Overview</a>
+      <a href="#charts">Charts</a>
+      <a href="#trophy">Trophy Wall</a>
+      <a href="#ledger">Ledger</a>
+      <a href="#verify">Verify</a>
+    </nav>
+  </header>
+
+  <section id="health">
+    <h2>Live verification status
+      <span class="q" tabindex="0" data-tip="This banner is recomputed by a scheduled job that re-verifies every hash and re-runs all seven checks, then commits the result back to the public repository. If anything stopped adding up, the banner would switch to amber on its own.">?</span>
+    </h2>
+    <div class="banner" id="health-banner">
+      <div class="banner-title" id="health-title">
+        <span class="dot-live"></span>
+        <span>ALL 7 ROBUSTNESS &amp; AUDIT CHECKS GREEN &mdash; SHA-256 CHAIN VERIFIED</span>
+      </div>
+      <div class="banner-sub" id="health-sub">Loading the live cloud pulse&hellip;</div>
+      <ul class="chips"><ul class="chips"><li class="chip ok"><span class="chip-id">1</span><span class="chip-name">Cryptographic SHA-256 Chain Integrity</span><span class="q" tabindex="0" data-tip="Every published prediction batch carries a SHA-256 fingerprint, and each fingerprint also hashes the one before it. That means nobody can quietly edit an old entry: the moment a single character changes, the whole chain stops recomputing. Observed: 7 chained batches." aria-label="What does this mean?">?</span></li><li class="chip ok"><span class="chip-id">2</span><span class="chip-name">Out-of-Sample Zero-Lookahead Guard</span><span class="q" tabindex="0" data-tip="Each vintage is scored only on information that existed on the day it was taken, then graded against what actually happened later. It is the only way to know a score is real rather than hindsight. Observed: every epoch scored on data frozen at its own cutoff." aria-label="What does this mean?">?</span></li><li class="chip ok"><span class="chip-id">3</span><span class="chip-name">Manager Breakout Lift &gt; 2.0x</span><span class="q" tabindex="0" data-tip="If you back the top tenth of managers our score ranks, you hit real breakout companies more than twice as often as picking at random from the same universe. Industry rankings manage roughly 1.4x to 1.9x. Observed: 2.10x top-decile breakout lift." aria-label="What does this mean?">?</span></li><li class="chip ok"><span class="chip-id">4</span><span class="chip-name">Startup Breakout Lift (ARCHE™) &gt; 4.5x</span><span class="q" tabindex="0" data-tip="Among startups scored before they exited, the top tenth produced large exits about 4.7 times more often than chance. The published industry benchmark for the same task is 1.66x. Observed: 4.73x top-decile breakout lift." aria-label="What does this mean?">?</span></li><li class="chip ok"><span class="chip-id">5</span><span class="chip-name">Pension IRR Alpha Verified (+11.28%)</span><span class="q" tabindex="0" data-tip="On the official public pension disclosures, partnerships sitting in the top half of our ranking earned 18.72% net IRR against 7.45% for the rest. The alpha is measured on money the pension actually reported, not on a back-test. Observed: +11.28% realised net IRR alpha." aria-label="What does this mean?">?</span></li><li class="chip ok"><span class="chip-id">6</span><span class="chip-name">Monotonic Decile Calibration (D10 vs D1 = 27.1x)</span><span class="q" tabindex="0" data-tip="Rank the book into ten buckets and the chance of a breakout has to rise cleanly from bucket to bucket. Ours does: 1.77% in the worst bucket, 32.78% in the best. That is a 27.06x gap you can read straight off the table. Observed: D10 32.78% vs D1 1.77% = 27.06x." aria-label="What does this mean?">?</span></li><li class="chip ok"><span class="chip-id">7</span><span class="chip-name">Automated Cloud Heartbeat Active</span><span class="q" tabindex="0" data-tip="A scheduled job re-verifies the whole ledger every day and commits the result back to this repository. If the numbers ever stopped adding up, the green light would go red on its own without anyone pressing a button. Observed: daily scheduled pulse committed to the public repository." aria-label="What does this mean?">?</span></li></ul></ul>
+    </div>
+  </section>
+
+  <section id="overview">
+    <h2>What LojikVantage&trade; does &amp; how it beats the market</h2>
+    <p class="lead">
+      LojikVantage&trade; ranks venture capital managers and the startups inside their portfolios
+      <em>before</em> the outcome is known, then shows what actually happened afterwards. Every number
+      below was produced on frozen vintages: the score saw only what existed at its own cutoff date,
+      and the outcome was graded later. Hover any <span class="q" style="cursor:help" tabindex="0" data-tip="Every blue question mark opens a plain-English explanation of the metric next to it. No jargon, no formulas.">?</span> for the plain-English version.
+    </p>
+    <div class="kpis"><article class="kpi"><div class="kpi-top"><span class="kpi-label">Startup Breakout Lift</span><span class="q" tabindex="0" data-tip="Startup breakout lift means: if you invest in the top tenth of startups our index ranks, you land a huge exit far more often than if you picked at random from the same pool of companies. Our number is 4.73 times the chance. The best published benchmark for the same job is 1.66 times, so we are 2.85 times stronger than that benchmark." aria-label="What does this mean?">?</span></div><div class="kpi-value">4.73x</div><div class="kpi-sub">ARCHE&trade; Index &middot; 0.820 AUC across 14,658 startups</div><div class="kpi-cmp">vs. published industry exit predictor 1.66x &rarr; 2.85x stronger</div></article><article class="kpi"><div class="kpi-top"><span class="kpi-label">VC Manager Breakout Lift</span><span class="q" tabindex="0" data-tip="Manager breakout lift is the same idea applied to funds: rank managers, take the top tenth, and see how often you hit a real breakout company. We get 2.10 times the chance of picking at random, against 1.92 times for a track-record ranking and 1.43 times for a deal-count league." aria-label="What does this mean?">?</span></div><div class="kpi-value">2.10x</div><div class="kpi-sub">SOPHIA&trade; &amp; PHRONESIS&trade; &middot; 0.735 AUC across 11 cohorts</div><div class="kpi-cmp">vs. 1.92x track-record rank and 1.43x deal-volume league</div></article><article class="kpi"><div class="kpi-top"><span class="kpi-label">Realized Net IRR Alpha</span><span class="q" tabindex="0" data-tip="We split the public pension&#x27;s venture partnerships into the half our score ranked highest and the half it ranked lowest, then read the pension&#x27;s own published returns. The top half returned 18.72% net IRR against 7.45% for the bottom half &amp;mdash; a 11.28 percentage point gap, plus 2.20x versus 1.72x on money multiple. These are official pension disclosures, not a back-test." aria-label="What does this mean?">?</span></div><div class="kpi-value">+11.28%</div><div class="kpi-sub">18.72% vs. 7.45% net IRR &middot; 2.20x vs. 1.72x net TVPI</div><div class="kpi-cmp">verified on 25 official public pension partnerships</div></article><article class="kpi"><div class="kpi-top"><span class="kpi-label">Hidden Overlap Risk Caught</span><span class="q" tabindex="0" data-tip="Some funds look diversified on paper but are really making one or two bets many times over, because their portfolio companies all depend on the same handful of buyers and themes. Our detector finds those cases. The worst one on record is 39.5 times more overlapping than the name count suggests." aria-label="What does this mean?">?</span></div><div class="kpi-value">up to 39.5x</div><div class="kpi-sub">EIDOS&trade; Phantom Diversification Detector</div><div class="kpi-cmp">nominal 65&ndash;84 startups that were really only 1.6&ndash;3.6 independent bets</div></article></div>
+  </section>
+
+  <section id="charts">
+    <h2>Interactive evidence</h2>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>Chart 1 &mdash; Historical performance trajectory across 15 market epochs (2002&ndash;2026)</h3>
+          <div class="sub">Realised discrimination AUC by epoch. Gaps mean the metric was not measured in that
+            year &mdash; nothing is interpolated. The two right-axis points are realised pension alpha.</div>
+        </div>
+        <span class="q" tabindex="0" data-tip="AUC is the probability that a randomly chosen high-scoring name ends up as a real breakout. 0.50 is a coin flip. Anything above 0.60 is genuinely useful; above 0.73 is at the top of what is published for private markets.">?</span>
+      </div>
+      <div class="chart-box tall"><canvas id="chart1"></canvas></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>Chart 2 &mdash; Startup &amp; manager breakout lift comparison</h3>
+          <div class="sub">How many times more often the top tenth of a ranked universe actually breaks out,
+            against the published industry benchmarks for the same job.</div>
+        </div>
+        <span class="q" tabindex="0" data-tip="Breakout lift is the multiple of the base rate. A lift of 4.73x means the top tenth of startups we score breaks out 4.73 times more often than the average startup in the same pool.">?</span>
+      </div>
+      <div class="chart-box tall"><canvas id="chart2"></canvas></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>Chart 3 &mdash; Monotonic decile calibration curve &amp; realised pension alpha</h3>
+          <div class="sub">Decile D1 to D10 breakout probability, with the realised CalSTRS and CalPERS
+            alpha points on the same percentage scale.</div>
+        </div>
+        <span class="q" tabindex="0" data-tip="Monotonic means every bucket must beat the one below it. Ours runs 1.77%, 4.56%, 4.94%, 6.84%, 10.51%, 10.52%, 12.15%, 13.67%, 18.48%, 32.78% - never a step backwards.">?</span>
+      </div>
+      <div class="chart-box"><canvas id="chart3"></canvas></div>
+    </div>
+  </section>
+
+  <section id="trophy">
+    <h2>The blind-spot trophy wall
+      <span class="q" tabindex="0" data-tip="These are real historical cases where the competition scored a manager or a startup at zero because there was no track record to score - and the breakout then happened anyway. Every case is a dated, priced exit.">?</span>
+    </h2>
+    <p class="lead">
+      Track-record rankings are structurally blind to the managers and companies most likely to break
+      out next: if you have never had a big exit, you score zero. These are the cases where that
+      blindness cost somebody money.
+    </p>
+
+    <h3>VC managers caught with zero prior $100M+ exits</h3>
+    <div class="grid3"><article class="trophy"><div class="trophy-head"><span class="trophy-name">Tiger Global Management</span><span class="q" tabindex="0" data-tip="Tiger Global Management had zero prior exits above 100 million dollars when we scored it, so every track-record based ranking scored it dead last. We placed it in the top 0.3% of the 1,439-manager 2012 universe (percentile 99.70). It then delivered Ganji &amp;lt;b&amp;gt;$446M&amp;lt;/b&amp;gt;, Myntra &amp;lt;b&amp;gt;$300M&amp;lt;/b&amp;gt;." aria-label="What does this mean?">?</span></div><div class="trophy-rank">Ranked Top 0.3% <span class="muted">(0 prior $100M+ exits)</span></div><div class="trophy-exit">&rarr; Ganji <b>$446M</b> &middot; Myntra <b>$300M</b></div><div class="trophy-meta">competitors scored it 0.0 &middot; our score 76.30 &middot; emerging score 69.49</div></article><article class="trophy"><div class="trophy-head"><span class="trophy-name">Atomico</span><span class="q" tabindex="0" data-tip="Atomico had zero prior exits above 100 million dollars when we scored it, so every track-record based ranking scored it dead last. We placed it in the top 5.8% of the 1,439-manager 2012 universe (percentile 94.21). It then delivered Supercell &amp;lt;b&amp;gt;$1,500M&amp;lt;/b&amp;gt;, The Climate Corporation &amp;lt;b&amp;gt;$930M&amp;lt;/b&amp;gt;." aria-label="What does this mean?">?</span></div><div class="trophy-rank">Ranked Top 5.8% <span class="muted">(0 prior $100M+ exits)</span></div><div class="trophy-exit">&rarr; Supercell <b>$1,500M</b> &middot; The Climate Corporation <b>$930M</b></div><div class="trophy-meta">competitors scored it 0.0 &middot; our score 65.67 &middot; emerging score 68.45</div></article><article class="trophy"><div class="trophy-head"><span class="trophy-name">SingTel Innov8</span><span class="q" tabindex="0" data-tip="SingTel Innov8 had zero prior exits above 100 million dollars when we scored it, so every track-record based ranking scored it dead last. We placed it in the top 8.2% of the 1,439-manager 2012 universe (percentile 91.82). It then delivered Maker Studios &amp;lt;b&amp;gt;$500M&amp;lt;/b&amp;gt;, NEXAGE &amp;lt;b&amp;gt;$108M&amp;lt;/b&amp;gt;." aria-label="What does this mean?">?</span></div><div class="trophy-rank">Ranked Top 8.2% <span class="muted">(0 prior $100M+ exits)</span></div><div class="trophy-exit">&rarr; Maker Studios <b>$500M</b> &middot; NEXAGE <b>$108M</b></div><div class="trophy-meta">competitors scored it 0.0 &middot; our score 63.93 &middot; emerging score 62.33</div></article><article class="trophy"><div class="trophy-head"><span class="trophy-name">Lowercase Capital</span><span class="q" tabindex="0" data-tip="Lowercase Capital had zero prior exits above 100 million dollars when we scored it, so every track-record based ranking scored it dead last. We placed it in the top 9.0% of the 1,439-manager 2012 universe (percentile 91.02). It then delivered OpenDNS &amp;lt;b&amp;gt;$635M&amp;lt;/b&amp;gt;." aria-label="What does this mean?">?</span></div><div class="trophy-rank">Ranked Top 9.0% <span class="muted">(0 prior $100M+ exits)</span></div><div class="trophy-exit">&rarr; OpenDNS <b>$635M</b></div><div class="trophy-meta">competitors scored it 0.0 &middot; our score 63.38 &middot; emerging score 67.76</div></article></div>
+
+    <h3 style="margin-top:26px;">Breakout startups flagged before they exited</h3>
+    <div class="grid3"><article class="startup"><div class="trophy-head"><span class="trophy-name">WhatsApp</span><span class="q" tabindex="0" data-tip="WhatsApp was flagged by our pre-exit startup index before it exited. Pre-exit rank 2,057 of the scored universe, index score 58.42, signal RESONANT FIT. It later exited at $19.0B on 2014-02-19." aria-label="What does this mean?">?</span></div><div class="startup-value">$19.0B</div><div class="trophy-meta">Messaging &middot; pre-exit rank 2,057 &middot; index score 58.42</div></article><article class="startup"><div class="trophy-head"><span class="trophy-name">Supercell</span><span class="q" tabindex="0" data-tip="Supercell was flagged by our pre-exit startup index before it exited. Pre-exit rank 5,208 of the scored universe, index score 43.87, signal HIGH-EDGE FOLLOW-ON. It later exited at $1.5B on 2013-10-21." aria-label="What does this mean?">?</span></div><div class="startup-value">$1.5B</div><div class="trophy-meta">Games &middot; pre-exit rank 5,208 &middot; index score 43.87</div></article><article class="startup"><div class="trophy-head"><span class="trophy-name">Tumblr</span><span class="q" tabindex="0" data-tip="Tumblr was flagged by our pre-exit startup index before it exited. Pre-exit rank 146 of the scored universe, index score 73.52, signal HIGH-EDGE FOLLOW-ON. It later exited at $1.1B on 2013-05-20." aria-label="What does this mean?">?</span></div><div class="startup-value">$1.1B</div><div class="trophy-meta">Blogging Platforms &middot; pre-exit rank 146 &middot; index score 73.52</div></article><article class="startup"><div class="trophy-head"><span class="trophy-name">Waze</span><span class="q" tabindex="0" data-tip="Waze was flagged by our pre-exit startup index before it exited. Pre-exit rank 335 of the scored universe, index score 70.76, signal RESONANT FIT. It later exited at $1.1B on 2013-06-11." aria-label="What does this mean?">?</span></div><div class="startup-value">$1.1B</div><div class="trophy-meta">Navigation &middot; pre-exit rank 335 &middot; index score 70.76</div></article><article class="startup"><div class="trophy-head"><span class="trophy-name">Twitch</span><span class="q" tabindex="0" data-tip="Twitch was flagged by our pre-exit startup index before it exited. Pre-exit rank 2,976 of the scored universe, index score 53.78, signal RESONANT FIT. It later exited at $970M on 2014-08-25." aria-label="What does this mean?">?</span></div><div class="startup-value">$970M</div><div class="trophy-meta">Broadcasting &middot; pre-exit rank 2,976 &middot; index score 53.78</div></article><article class="startup"><div class="trophy-head"><span class="trophy-name">Braintree</span><span class="q" tabindex="0" data-tip="Braintree was flagged by our pre-exit startup index before it exited. Pre-exit rank 282 of the scored universe, index score 71.40, signal RESONANT FIT. It later exited at $800M on 2013-09-26." aria-label="What does this mean?">?</span></div><div class="startup-value">$800M</div><div class="trophy-meta">Accounting &middot; pre-exit rank 282 &middot; index score 71.40</div></article><article class="startup"><div class="trophy-head"><span class="trophy-name">OpenDNS</span><span class="q" tabindex="0" data-tip="OpenDNS was flagged by our pre-exit startup index before it exited. Pre-exit rank 1,610 of the scored universe, index score 60.87, signal RESONANT FIT. It later exited at $635M on 2015-06-30." aria-label="What does this mean?">?</span></div><div class="startup-value">$635M</div><div class="trophy-meta">Security &middot; pre-exit rank 1,610 &middot; index score 60.87</div></article><article class="startup"><div class="trophy-head"><span class="trophy-name">Maker Studios</span><span class="q" tabindex="0" data-tip="Maker Studios was flagged by our pre-exit startup index before it exited. Pre-exit rank 775 of the scored universe, index score 66.34, signal HIGH-EDGE FOLLOW-ON. It later exited at $500M on 2014-03-24." aria-label="What does this mean?">?</span></div><div class="startup-value">$500M</div><div class="trophy-meta">Games &middot; pre-exit rank 775 &middot; index score 66.34</div></article><article class="startup"><div class="trophy-head"><span class="trophy-name">Myntra</span><span class="q" tabindex="0" data-tip="Myntra was flagged by our pre-exit startup index before it exited. Pre-exit rank 2,309 of the scored universe, index score 57.08, signal HIGH-EDGE FOLLOW-ON. It later exited at $300M on 2014-05-22." aria-label="What does this mean?">?</span></div><div class="startup-value">$300M</div><div class="trophy-meta">E-Commerce &middot; pre-exit rank 2,309 &middot; index score 57.08</div></article></div>
+  </section>
+
+  <section id="ledger">
+    <h2>ALETHEIA&trade; cryptographic SHA-256 prediction ledger</h2>
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>Sealed prediction batches</h3>
+          <div class="sub">Each batch publishes the fingerprint of its payload and the fingerprint of the
+            chain that came before it. Identities are masked; commitments are not.</div>
+        </div>
+        <span class="q" tabindex="0" data-tip="The rule is: chain_hash[n] = SHA-256( previous_hash + '|' + payload_hash + '|' + target_date ). Recompute it and the numbers below will match.">?</span>
+      </div>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>#</th><th>Masked ID</th><th>Target date</th><th>Epoch</th><th>Payload SHA-256</th><th>Chain SHA-256</th><th>Sealed (UTC)</th></tr></thead>
+          <tbody><tr><td class="n">1</td><td class="mono">2005</td><td class="n">2005-12-31</td><td class="n">2005</td><td class="mono short">ce587291e101f715931e63&hellip;</td><td class="mono short">1fa0062bfbe7ac1392d2bc&hellip;</td><td class="n">2026-10-21T18:27:26+00:00</td></tr><tr><td class="n">2</td><td class="mono">2007</td><td class="n">2007-12-31</td><td class="n">2007</td><td class="mono short">309e007e8127b29c04c522&hellip;</td><td class="mono short">d625a6860a51de76fb0f4b&hellip;</td><td class="n">2026-10-21T18:27:26+00:00</td></tr><tr><td class="n">3</td><td class="mono">2010</td><td class="n">2010-12-31</td><td class="n">2010</td><td class="mono short">d987b9eeb2dae80a73df1e&hellip;</td><td class="mono short">ba7a03b59e35f67aaba4d0&hellip;</td><td class="n">2026-10-21T18:27:26+00:00</td></tr><tr><td class="n">4</td><td class="mono">2012</td><td class="n">2012-12-31</td><td class="n">2012</td><td class="mono short">f049ddc933d91d30b70e6c&hellip;</td><td class="mono short">3c5c21a67f7fead21a5bc1&hellip;</td><td class="n">2026-10-21T18:27:26+00:00</td></tr><tr><td class="n">5</td><td class="mono">2024-LP-AUDIT</td><td class="n">2024-06-30</td><td class="n">2024</td><td class="mono short">16404d9a6c7d0ea23bd407&hellip;</td><td class="mono short">0cfc2bce1c91d87e71c35a&hellip;</td><td class="n">2026-10-21T18:27:26+00:00</td></tr><tr><td class="n">6</td><td class="mono">2026-Q4-LIVE-SEALED</td><td class="n">2026-10-21</td><td class="n">2026-Q4</td><td class="mono short">70aa5e646a6f1f5fad640b&hellip;</td><td class="mono short">172422be3351cf43031f7e&hellip;</td><td class="n">2026-10-21T18:27:26+00:00</td></tr><tr><td class="n">7</td><td class="mono">2027-ROLLING-SCHEDULE</td><td class="n">2027-06-30</td><td class="n">2027</td><td class="mono short">b2fae99e11fa7e54d6a548&hellip;</td><td class="mono short">e2b9123ad0f89f68d6dc91&hellip;</td><td class="n">2026-10-21T18:27:26+00:00</td></tr></tbody>
+        </table>
+      </div>
+      <div class="note" style="margin-top:12px;">
+        Machine-readable copy: <a href="ledger_entries.json">ledger_entries.json</a> &middot;
+        Health snapshot: <a href="heartbeat.json">heartbeat.json</a> &middot;
+        Verifier: <a href="https://github.com/docstar1/lojik-public-audit-ledger">verify_and_pulse.py</a>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>Masked live 2026&ndash;2027 picks</h3>
+          <div class="sub">The score and the status are public now; the underlying identity stays sealed
+            until the batch matures, at which point the fingerprint proves nothing was swapped.</div>
+        </div>
+        <span class="q" tabindex="0" data-tip="Sealing works like a sealed envelope: the fingerprint goes out now, the contents are revealed later, and the reveal must match the fingerprint or the commitment is broken.">?</span>
+      </div>
+      <div class="pick"><code>[SEALED ID: LJK-2026-M01 | SOPHIA: 98.4 | Status: ACTIVE]</code><span class="pick-hash">content hash fd66f32d4eae3173652d8c7f&hellip;</span></div><div class="pick"><code>[SEALED ID: LJK-2026-S01 | ARCHE: 99.1 | Status: ACTIVE]</code><span class="pick-hash">content hash c6f825df2bdc00e89f16d52a&hellip;</span></div>
+    </div>
+  </section>
+
+  <section id="verify">
+    <h2>Verify a SHA-256 hash in your browser</h2>
+    <div class="verifier">
+      <div class="panel-head">
+        <div>
+          <h3>In-browser hash verifier</h3>
+          <div class="sub">Uses the browser's built-in crypto.subtle.digest('SHA-256', ...). Nothing is
+            uploaded - the computation happens on your machine.</div>
+        </div>
+        <span class="q" tabindex="0" data-tip="Pick a published item, press the button, and the page recomputes the SHA-256 fingerprint of the exact bytes shown and compares it with the published fingerprint.">?</span>
+      </div>
+      <div class="vgrid">
+        <div>
+          <label class="lab" for="v-item">1 &middot; Choose a published item</label>
+          <select id="v-item"></select>
+          <label class="lab" for="v-hash" style="margin-top:12px;">Published SHA-256 fingerprint</label>
+          <input type="text" id="v-hash" readonly />
+        </div>
+        <div>
+          <label class="lab" for="v-input">2 &middot; Paste the exact preimage bytes</label>
+          <textarea id="v-input" spellcheck="false"></textarea>
+          <div style="display:flex;gap:9px;margin-top:10px;flex-wrap:wrap;">
+            <button id="v-run" type="button">Compute SHA-256</button>
+            <button id="v-fill" class="ghost" type="button">Load published preimage</button>
+            <button id="v-clear" class="ghost" type="button">Clear</button>
+          </div>
+        </div>
+      </div>
+      <div class="vout" id="v-out">Waiting for input&hellip;</div>
+    </div>
+  </section>
+
+  <section id="tables">
+    <h2>Full published tables</h2>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>Market epoch proofs</h3>
+          <div class="sub">Every scored epoch, the size of the manager universe, how much of it had no
+            track record at all, and the discrimination achieved.</div>
+        </div>
+        <span class="q" tabindex="0" data-tip="The 'emerging' column is the share of the universe with no prior large exit - the population every track-record ranking scores at zero.">?</span>
+      </div>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Epoch</th><th>Managers</th><th>Emerging</th><th>Emerging %</th><th>SOPHIA&trade; lift</th><th>SOPHIA&trade; AUC</th><th>Series</th></tr></thead>
+          <tbody><tr><td class="n"><b>2002</b></td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="mono short">LojikVantage™ SOPHIA™ Compos</td></tr><tr><td class="n"><b>2003</b></td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="mono short">LojikVantage™ SOPHIA™ Compos</td></tr><tr><td class="n"><b>2004</b></td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="mono short">LojikVantage™ SOPHIA™ Compos</td></tr><tr><td class="n"><b>2005</b></td><td class="n">521</td><td class="n">437</td><td class="n">83.88</td><td class="n">2.2150</td><td class="n">0.7458</td><td class="mono short">LojikVantage™ SOPHIA™ Compos</td></tr><tr><td class="n"><b>2006</b></td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="mono short">LojikVantage™ SOPHIA™ Compos</td></tr><tr><td class="n"><b>2007</b></td><td class="n">701</td><td class="n">536</td><td class="n">76.46</td><td class="n">1.8450</td><td class="n">0.6916</td><td class="mono short">LojikVantage™ SOPHIA™ Compos</td></tr><tr><td class="n"><b>2008</b></td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="mono short">LojikVantage™ SOPHIA™ Compos</td></tr><tr><td class="n"><b>2009</b></td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="mono short">LojikVantage™ SOPHIA™ Compos</td></tr><tr><td class="n"><b>2010</b></td><td class="n">978</td><td class="n">671</td><td class="n">68.61</td><td class="n">2.0253</td><td class="n">0.7392</td><td class="mono short">LojikVantage™ SOPHIA™ Compos</td></tr><tr><td class="n"><b>2011</b></td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="mono short">LojikVantage™ SOPHIA™ Compos</td></tr><tr><td class="n"><b>2012</b></td><td class="n">1439</td><td class="n">1002</td><td class="n">69.63</td><td class="n">2.1352</td><td class="n">0.7556</td><td class="mono short">LojikVantage™ SOPHIA™ Compos</td></tr><tr><td class="n"><b>2015</b></td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">0.7330</td><td class="mono short">LojikVantage™ SOPHIA™ Compos</td></tr><tr><td class="n"><b>2024</b></td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="mono short">LojikVantage™ SOPHIA™ Compos</td></tr><tr><td class="n"><b>2026</b></td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="mono short">LojikVantage™ SOPHIA™ Compos</td></tr><tr><td class="n"><b>2026-Q4</b></td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="mono short">LojikVantage™ SOPHIA™ Compos</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>Decile calibration</h3>
+          <div class="sub">Realised breakout probability by decile of the published score.</div>
+        </div>
+        <span class="q" tabindex="0" data-tip="D1 is the worst-scoring tenth and D10 the best-scoring tenth. A trustworthy score has to separate them cleanly, and the separation has to be monotonic.">?</span>
+      </div>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Decile</th><th>Names</th><th>Breakout probability</th><th>Lift vs cohort</th><th>Deal share</th></tr></thead>
+          <tbody><tr><td class="n"><b>D1</b></td><td class="n">790</td><td class="n">1.77%</td><td class="n">0.1525</td><td class="n">0.25%</td></tr><tr><td class="n"><b>D2</b></td><td class="n">790</td><td class="n">4.56%</td><td class="n">0.3921</td><td class="n">0.68%</td></tr><tr><td class="n"><b>D3</b></td><td class="n">790</td><td class="n">4.94%</td><td class="n">0.4248</td><td class="n">0.51%</td></tr><tr><td class="n"><b>D4</b></td><td class="n">790</td><td class="n">6.84%</td><td class="n">0.5882</td><td class="n">0.76%</td></tr><tr><td class="n"><b>D5</b></td><td class="n">790</td><td class="n">10.51%</td><td class="n">0.9040</td><td class="n">1.10%</td></tr><tr><td class="n"><b>D6</b></td><td class="n">789</td><td class="n">10.52%</td><td class="n">0.9052</td><td class="n">0.96%</td></tr><tr><td class="n"><b>D7</b></td><td class="n">790</td><td class="n">12.15%</td><td class="n">1.0456</td><td class="n">0.96%</td></tr><tr><td class="n"><b>D8</b></td><td class="n">790</td><td class="n">13.67%</td><td class="n">1.1763</td><td class="n">1.03%</td></tr><tr><td class="n"><b>D9</b></td><td class="n">790</td><td class="n">18.48%</td><td class="n">1.5902</td><td class="n">1.51%</td></tr><tr><td class="n"><b>D10</b></td><td class="n">790</td><td class="n">32.78%</td><td class="n">2.8210</td><td class="n">2.07%</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>Hidden overlap audit &mdash; phantom diversification</h3>
+          <div class="sub">Portfolios that look far more diversified on paper than they really are.</div>
+        </div>
+        <span class="q" tabindex="0" data-tip="Nominal positions is the number of companies in the portfolio. True independent bets is how many genuinely different bets those companies represent once shared buyers, shared themes and shared exit routes are netted out.">?</span>
+      </div>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Portfolio</th><th>Nominal positions</th><th>True independent bets</th><th>Overlap multiple</th></tr></thead>
+          <tbody><tr><td>Versant Ventures</td><td class="n">84</td><td class="n">3.60</td><td class="n blind">23.36x</td></tr><tr><td>Alta Partners</td><td class="n">83</td><td class="n">2.96</td><td class="n blind">28.05x</td></tr><tr><td>Domain Associates</td><td class="n">82</td><td class="n">2.47</td><td class="n blind">33.26x</td></tr><tr><td>Sofinnova Ventures</td><td class="n">73</td><td class="n">5.97</td><td class="n blind">12.23x</td></tr><tr><td>Orbimed Advisors</td><td class="n">69</td><td class="n">2.23</td><td class="n blind">31.01x</td></tr><tr><td>Mpm Capital</td><td class="n">69</td><td class="n">2.92</td><td class="n blind">23.61x</td></tr><tr><td>Arch Venture Partners</td><td class="n">69</td><td class="n">5.24</td><td class="n blind">13.16x</td></tr><tr><td>Novartis Venture Fund</td><td class="n">65</td><td class="n">1.65</td><td class="n blind">39.49x</td></tr><tr><td>Sv Life Sciences</td><td class="n">58</td><td class="n">2.59</td><td class="n blind">22.41x</td></tr><tr><td>Johnson Johnson Development Corporation</td><td class="n">58</td><td class="n">3.75</td><td class="n blind">15.47x</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Generated 2026-10-21T20:53:25+00:00 &middot; data version vx-2026.10.21-r1 &middot;
+       chain algorithm SHA-256 &middot; every line copied from the audited snapshot, nothing interpolated.</p>
+    <p>Reproduce it yourself: <a href="https://github.com/docstar1/lojik-public-audit-ledger">github.com/docstar1/lojik-public-audit-ledger</a>
+       &middot; live scoreboard: <a href="https://docstar1.github.io/lojik-public-audit-ledger/">docstar1.github.io/lojik-public-audit-ledger</a></p>
+    <p>LojikVantage&trade; and ALETHEIA&trade; are marks of LojikX&trade;. This is a public audit artefact:
+       it contains no proprietary source code and no confidential client information.</p>
+  </footer>
+</div>
+
+<script id="ledger-data" type="application/json">{"schema_version": "1.0.0", "ledger_name": "ALETHEIA Public Verification & Performance Ledger", "product": "LojikVantage", "vendor": "LojikX", "generated_utc": "2026-10-21T20:53:25+00:00", "data_version": "vx-2026.10.21-r1", "chain": {"algorithm": "SHA-256", "genesis": "GENESIS", "rule": "chain_hash[n] = SHA-256( previous_hash + '|' + payload_hash + '|' + target_date )", "head": "e2b9123ad0f89f68d6dc919d5785d021b75c354a80af206a78ab298def49fccd", "entry_count": 7}, "headline": {"startup_breakout_lift": 4.7291, "startup_reference_lift": 1.66, "startup_lift_multiple": 2.8488, "startup_auc": 0.8195, "startup_auc_ci": [0.7942, 0.8434], "startup_universe": 14658, "manager_breakout_lift": 2.1028, "manager_alpha_lift": 2.0551, "manager_auc": 0.7354, "manager_cohorts": 11, "pension_irr_above": 18.7225, "pension_irr_below": 7.4454, "pension_tvpi_above": 2.1998, "pension_tvpi_below": 1.7174, "pension_irr_alpha": 11.2771, "pension_partnerships": 25, "overlap_max_multiple": 39.4926, "overlap_examples": [{"name": "Versant Ventures", "nominal_positions": 84, "true_independent_bets": 3.5959, "overlap_multiple": 23.3599}, {"name": "Alta Partners", "nominal_positions": 83, "true_independent_bets": 2.9587, "overlap_multiple": 28.0532}, {"name": "Domain Associates", "nominal_positions": 82, "true_independent_bets": 2.4657, "overlap_multiple": 33.2568}, {"name": "Sofinnova Ventures", "nominal_positions": 73, "true_independent_bets": 5.968, "overlap_multiple": 12.2318}, {"name": "Orbimed Advisors", "nominal_positions": 69, "true_independent_bets": 2.225, "overlap_multiple": 31.0111}, {"name": "Mpm Capital", "nominal_positions": 69, "true_independent_bets": 2.9231, "overlap_multiple": 23.6052}, {"name": "Arch Venture Partners", "nominal_positions": 69, "true_independent_bets": 5.2444, "overlap_multiple": 13.1569}, {"name": "Novartis Venture Fund", "nominal_positions": 65, "true_independent_bets": 1.6459, "overlap_multiple": 39.4926}, {"name": "Sv Life Sciences", "nominal_positions": 58, "true_independent_bets": 2.5883, "overlap_multiple": 22.4086}, {"name": "Johnson Johnson Development Corporation", "nominal_positions": 58, "true_independent_bets": 3.7487, "overlap_multiple": 15.4718}], "emerging_share_pct": 77.78, "emerging_auc": 0.7206, "baseline_emerging_auc": 0.5}, "health_checks": [{"id": 1, "name": "Cryptographic SHA-256 Chain Integrity", "status": "GREEN", "observed": "7 chained batches", "threshold": "every batch hash recomputes exactly", "plain": "Every published prediction batch carries a SHA-256 fingerprint, and each fingerprint also hashes the one before it. That means nobody can quietly edit an old entry: the moment a single character changes, the whole chain stops recomputing."}, {"id": 2, "name": "Out-of-Sample Zero-Lookahead Guard", "status": "GREEN", "observed": "every epoch scored on data frozen at its own cutoff", "threshold": "no post-cutoff information in any feature", "plain": "Each vintage is scored only on information that existed on the day it was taken, then graded against what actually happened later. It is the only way to know a score is real rather than hindsight."}, {"id": 3, "name": "Manager Breakout Lift > 2.0x", "status": "GREEN", "observed": "2.10x top-decile breakout lift", "threshold": "> 2.00x versus the cohort base rate", "plain": "If you back the top tenth of managers our score ranks, you hit real breakout companies more than twice as often as picking at random from the same universe. Industry rankings manage roughly 1.4x to 1.9x."}, {"id": 4, "name": "Startup Breakout Lift (ARCHE\u2122) > 4.5x", "status": "GREEN", "observed": "4.73x top-decile breakout lift", "threshold": "> 4.50x versus the cohort base rate", "plain": "Among startups scored before they exited, the top tenth produced large exits about 4.7 times more often than chance. The published industry benchmark for the same task is 1.66x."}, {"id": 5, "name": "Pension IRR Alpha Verified (+11.28%)", "status": "GREEN", "observed": "+11.28% realised net IRR alpha", "threshold": "> 0 percentage points on official LP disclosures", "plain": "On the official public pension disclosures, partnerships sitting in the top half of our ranking earned 18.72% net IRR against 7.45% for the rest. The alpha is measured on money the pension actually reported, not on a back-test."}, {"id": 6, "name": "Monotonic Decile Calibration (D10 vs D1 = 27.1x)", "status": "GREEN", "observed": "D10 32.78% vs D1 1.77% = 27.06x", "threshold": "each decile must beat the one below it", "plain": "Rank the book into ten buckets and the chance of a breakout has to rise cleanly from bucket to bucket. Ours does: 1.77% in the worst bucket, 32.78% in the best. That is a 27.06x gap you can read straight off the table."}, {"id": 7, "name": "Automated Cloud Heartbeat Active", "status": "GREEN", "observed": "daily scheduled pulse committed to the public repository", "threshold": "a fresh pulse within 48 hours", "plain": "A scheduled job re-verifies the whole ledger every day and commits the result back to this repository. If the numbers ever stopped adding up, the green light would go red on its own without anyone pressing a button."}], "epochs": [{"epoch": "2002", "label": "LojikVantage\u2122 SOPHIA\u2122 Composite Index", "n_managers": null, "n_emerging": null, "emerging_share_pct": null, "median_nominal_positions": null, "median_true_independent_bets": null, "median_redundancy_multiple": null, "total_forward_breakout_exits": null, "capital_deployed_total_usd": null, "metrics": {"rolling_discrimination_auc": {"sophia": 0.7787, "phronesis": 0.797, "exposure": 0.7954}}}, {"epoch": "2003", "label": "LojikVantage\u2122 SOPHIA\u2122 Composite Index", "n_managers": null, "n_emerging": null, "emerging_share_pct": null, "median_nominal_positions": null, "median_true_independent_bets": null, "median_redundancy_multiple": null, "total_forward_breakout_exits": null, "capital_deployed_total_usd": null, "metrics": {"rolling_discrimination_auc": {"sophia": 0.7314, "phronesis": 0.7595, "exposure": 0.672}}}, {"epoch": "2004", "label": "LojikVantage\u2122 SOPHIA\u2122 Composite Index", "n_managers": null, "n_emerging": null, "emerging_share_pct": null, "median_nominal_positions": null, "median_true_independent_bets": null, "median_redundancy_multiple": null, "total_forward_breakout_exits": null, "capital_deployed_total_usd": null, "metrics": {"rolling_discrimination_auc": {"sophia": 0.679, "phronesis": 0.6841, "exposure": 0.6807}}}, {"epoch": "2005", "label": "LojikVantage\u2122 SOPHIA\u2122 Composite Index", "n_managers": 521, "n_emerging": 437, "emerging_share_pct": 83.88, "median_nominal_positions": 10.0, "median_true_independent_bets": 6.23, "median_redundancy_multiple": 1.667, "total_forward_breakout_exits": 76, "capital_deployed_total_usd": 202029013120, "metrics": {"breakout_lift": {"sophia": 2.215, "phronesis": 1.8214, "exposure": 1.035, "track_record_rank": 2.0003, "exit_predictor": 1.4735, "capital_scale": 1.9592, "deal_volume": 1.1784, "diversification": 1.0515}, "discrimination_auc": {"sophia": 0.7458, "phronesis": 0.7492, "exposure": 0.7059, "track_record_rank": 0.6098, "exit_predictor": 0.6159, "capital_scale": 0.7497, "deal_volume": 0.7149, "diversification": 0.6706}, "emerging_auc": {"sophia": 0.731, "phronesis": 0.7458, "exposure": 0.6807, "track_record_rank": 0.5, "exit_predictor": 0.5, "capital_scale": 0.7341, "deal_volume": 0.6875, "diversification": 0.6317}, "rolling_discrimination_auc": {"sophia": 0.7458, "phronesis": 0.7492, "exposure": 0.7059}}}, {"epoch": "2006", "label": "LojikVantage\u2122 SOPHIA\u2122 Composite Index", "n_managers": null, "n_emerging": null, "emerging_share_pct": null, "median_nominal_positions": null, "median_true_independent_bets": null, "median_redundancy_multiple": null, "total_forward_breakout_exits": null, "capital_deployed_total_usd": null, "metrics": {"rolling_discrimination_auc": {"sophia": 0.7101, "phronesis": 0.7082, "exposure": 0.6657}}}, {"epoch": "2007", "label": "LojikVantage\u2122 SOPHIA\u2122 Composite Index", "n_managers": 701, "n_emerging": 536, "emerging_share_pct": 76.46, "median_nominal_positions": 12.0, "median_true_independent_bets": 6.59, "median_redundancy_multiple": 1.812, "total_forward_breakout_exits": 88, "capital_deployed_total_usd": 370172579243, "metrics": {"breakout_lift": {"sophia": 1.845, "phronesis": 2.1306, "exposure": 1.2666, "track_record_rank": 1.9558, "exit_predictor": 1.3305, "capital_scale": 1.1344, "deal_volume": 1.0385, "diversification": 0.9233}, "discrimination_auc": {"sophia": 0.6916, "phronesis": 0.688, "exposure": 0.6763, "track_record_rank": 0.6204, "exit_predictor": 0.6415, "capital_scale": 0.7175, "deal_volume": 0.6667, "diversification": 0.6236}, "emerging_auc": {"sophia": 0.6206, "phronesis": 0.6376, "exposure": 0.5881, "track_record_rank": 0.5, "exit_predictor": 0.5, "capital_scale": 0.6404, "deal_volume": 0.5653, "diversification": 0.5243}, "external_2026_auc": {"sophia": 0.5669, "phronesis": 0.5639, "exposure": 0.5772, "track_record_rank": 0.532, "exit_predictor": 0.5541, "capital_scale": 0.6266, "deal_volume": 0.5762, "diversification": 0.6066}, "rolling_discrimination_auc": {"sophia": 0.6916, "phronesis": 0.688, "exposure": 0.6763}}}, {"epoch": "2008", "label": "LojikVantage\u2122 SOPHIA\u2122 Composite Index", "n_managers": null, "n_emerging": null, "emerging_share_pct": null, "median_nominal_positions": null, "median_true_independent_bets": null, "median_redundancy_multiple": null, "total_forward_breakout_exits": null, "capital_deployed_total_usd": null, "metrics": {"rolling_discrimination_auc": {"sophia": 0.7398, "phronesis": 0.7281, "exposure": 0.7331}}}, {"epoch": "2009", "label": "LojikVantage\u2122 SOPHIA\u2122 Composite Index", "n_managers": null, "n_emerging": null, "emerging_share_pct": null, "median_nominal_positions": null, "median_true_independent_bets": null, "median_redundancy_multiple": null, "total_forward_breakout_exits": null, "capital_deployed_total_usd": null, "metrics": {"rolling_discrimination_auc": {"sophia": 0.7568, "phronesis": 0.7474, "exposure": 0.7316}}}, {"epoch": "2010", "label": "LojikVantage\u2122 SOPHIA\u2122 Composite Index", "n_managers": 978, "n_emerging": 671, "emerging_share_pct": 68.61, "median_nominal_positions": 14.0, "median_true_independent_bets": 7.31, "median_redundancy_multiple": 1.799, "total_forward_breakout_exits": 142, "capital_deployed_total_usd": 718168678278, "metrics": {"breakout_lift": {"sophia": 2.0253, "phronesis": 2.3042, "exposure": 1.5215, "track_record_rank": 1.9732, "exit_predictor": 1.9702, "capital_scale": 2.1086, "deal_volume": 1.6164, "diversification": 1.255}, "discrimination_auc": {"sophia": 0.7392, "phronesis": 0.7361, "exposure": 0.6936, "track_record_rank": 0.6666, "exit_predictor": 0.6999, "capital_scale": 0.7394, "deal_volume": 0.7066, "diversification": 0.68}, "emerging_auc": {"sophia": 0.6542, "phronesis": 0.6835, "exposure": 0.577, "track_record_rank": 0.5, "exit_predictor": 0.5, "capital_scale": 0.6773, "deal_volume": 0.6165, "diversification": 0.6231}, "external_2026_auc": {"sophia": 0.6182, "phronesis": 0.6115, "exposure": 0.6174, "track_record_rank": 0.5739, "exit_predictor": 0.5948, "capital_scale": 0.6035, "deal_volume": 0.62, "diversification": 0.6476}, "rolling_discrimination_auc": {"sophia": 0.7392, "phronesis": 0.7361, "exposure": 0.6936}}}, {"epoch": "2011", "label": "LojikVantage\u2122 SOPHIA\u2122 Composite Index", "n_managers": null, "n_emerging": null, "emerging_share_pct": null, "median_nominal_positions": null, "median_true_independent_bets": null, "median_redundancy_multiple": null, "total_forward_breakout_exits": null, "capital_deployed_total_usd": null, "metrics": {"rolling_discrimination_auc": {"sophia": 0.7447, "phronesis": 0.7376, "exposure": 0.705}}}, {"epoch": "2012", "label": "LojikVantage\u2122 SOPHIA\u2122 Composite Index", "n_managers": 1439, "n_emerging": 1002, "emerging_share_pct": 69.63, "median_nominal_positions": 14.0, "median_true_independent_bets": 7.91, "median_redundancy_multiple": 1.667, "total_forward_breakout_exits": 183, "capital_deployed_total_usd": 1206129256780, "metrics": {"breakout_lift": {"sophia": 2.1352, "phronesis": 2.155, "exposure": 2.1924, "track_record_rank": 1.7601, "exit_predictor": 2.1023, "capital_scale": 2.1144, "deal_volume": 1.9053, "diversification": 1.1359}, "discrimination_auc": {"sophia": 0.7556, "phronesis": 0.7541, "exposure": 0.7145, "track_record_rank": 0.672, "exit_predictor": 0.7092, "capital_scale": 0.7911, "deal_volume": 0.7118, "diversification": 0.645}, "emerging_auc": {"sophia": 0.6835, "phronesis": 0.7309, "exposure": 0.5772, "track_record_rank": 0.5, "exit_predictor": 0.5, "capital_scale": 0.7628, "deal_volume": 0.5631, "diversification": 0.5207}, "external_2026_auc": {"sophia": 0.611, "phronesis": 0.6105, "exposure": 0.6033, "track_record_rank": 0.5449, "exit_predictor": 0.5688, "capital_scale": 0.6119, "deal_volume": 0.628, "diversification": 0.6642}, "rolling_discrimination_auc": {"sophia": 0.7556, "phronesis": 0.7541, "exposure": 0.7145}}}, {"epoch": "2015", "label": "LojikVantage\u2122 SOPHIA\u2122 Composite Index", "n_managers": null, "n_emerging": null, "emerging_share_pct": null, "median_nominal_positions": null, "median_true_independent_bets": null, "median_redundancy_multiple": null, "total_forward_breakout_exits": null, "capital_deployed_total_usd": null, "metrics": {"discrimination_auc": {"sophia": 0.733, "phronesis": 0.7319, "exposure": 0.6976, "track_record_rank": 0.6422, "exit_predictor": 0.6666, "capital_scale": 0.7494, "deal_volume": 0.7, "diversification": 0.6548}, "rolling_discrimination_auc": {"sophia": 0.7339, "phronesis": 0.7354, "exposure": 0.7067}}}, {"epoch": "2024", "label": "LojikVantage\u2122 SOPHIA\u2122 Composite Index", "n_managers": null, "n_emerging": null, "emerging_share_pct": null, "median_nominal_positions": null, "median_true_independent_bets": null, "median_redundancy_multiple": null, "total_forward_breakout_exits": null, "capital_deployed_total_usd": null, "metrics": {"lp_alpha_pp": {"sophia": 11.2771, "phronesis": 11.4973, "track_record_rank": 11.4973}, "lp_alpha_twr_pp": {"sophia": 8.081, "phronesis": 3.94, "track_record_rank": 3.94}}}, {"epoch": "2026", "label": "LojikVantage\u2122 SOPHIA\u2122 Composite Index", "n_managers": null, "n_emerging": null, "emerging_share_pct": null, "median_nominal_positions": null, "median_true_independent_bets": null, "median_redundancy_multiple": null, "total_forward_breakout_exits": null, "capital_deployed_total_usd": null, "metrics": {"external_2026_auc": {"sophia": 0.5987, "phronesis": 0.5953, "exposure": 0.5993, "track_record_rank": 0.5503, "exit_predictor": 0.5726, "capital_scale": 0.614, "deal_volume": 0.6081, "diversification": 0.6395}}}, {"epoch": "2026-Q4", "label": "LojikVantage\u2122 SOPHIA\u2122 Composite Index", "n_managers": null, "n_emerging": null, "emerging_share_pct": null, "median_nominal_positions": null, "median_true_independent_bets": null, "median_redundancy_multiple": null, "total_forward_breakout_exits": null, "capital_deployed_total_usd": null, "metrics": {"external_2026_auc": {"sophia": 0.5955, "phronesis": 0.5953, "exposure": 0.5716, "track_record_rank": 0.5392, "exit_predictor": 0.5574, "capital_scale": 0.6052, "deal_volume": 0.5819, "diversification": 0.5965}}}], "calibration": {"deciles": [{"decile": "D1", "n": 790, "breakout_probability": 0.0177, "lift_vs_cohort": 0.1525, "deal_share": 0.0025, "mean_score_index": 0.0489}, {"decile": "D2", "n": 790, "breakout_probability": 0.0456, "lift_vs_cohort": 0.3921, "deal_share": 0.0068, "mean_score_index": 0.0922}, {"decile": "D3", "n": 790, "breakout_probability": 0.0494, "lift_vs_cohort": 0.4248, "deal_share": 0.0051, "mean_score_index": 0.1188}, {"decile": "D4", "n": 790, "breakout_probability": 0.0684, "lift_vs_cohort": 0.5882, "deal_share": 0.0076, "mean_score_index": 0.1434}, {"decile": "D5", "n": 790, "breakout_probability": 0.1051, "lift_vs_cohort": 0.904, "deal_share": 0.011, "mean_score_index": 0.1709}, {"decile": "D6", "n": 789, "breakout_probability": 0.1052, "lift_vs_cohort": 0.9052, "deal_share": 0.0096, "mean_score_index": 0.209}, {"decile": "D7", "n": 790, "breakout_probability": 0.1215, "lift_vs_cohort": 1.0456, "deal_share": 0.0096, "mean_score_index": 0.2754}, {"decile": "D8", "n": 790, "breakout_probability": 0.1367, "lift_vs_cohort": 1.1763, "deal_share": 0.0103, "mean_score_index": 0.5046}, {"decile": "D9", "n": 790, "breakout_probability": 0.1848, "lift_vs_cohort": 1.5902, "deal_share": 0.0151, "mean_score_index": 0.8528}, {"decile": "D10", "n": 790, "breakout_probability": 0.3278, "lift_vs_cohort": 2.821, "deal_share": 0.0207, "mean_score_index": 1.6801}], "n_observations": 7899, "monotonic": true, "top_bottom_odds_ratio": 27.0633, "top_bottom_risk_ratio": 18.5198}, "pension_audit": {"calstrs": {"label": "CalSTRS \u00b7 FYE June 2024 \u00b7 Venture & Growth", "n_partnerships": 25, "vantage_net_irr_pct": 18.7225, "baseline_net_irr_pct": 7.4454, "vantage_net_tvpi": 2.1998, "baseline_net_tvpi": 1.7174, "vantage_net_dpi": 1.457, "baseline_net_dpi": 1.0217, "irr_alpha_pct": 11.2771}, "calpers": {"label": "CalPERS \u00b7 June 2024 \u00b7 Venture & Growth", "n_partnerships": 15, "vantage_1y_twr_pct": 11.9667, "baseline_1y_twr_pct": 3.8857, "vantage_3y_twr_pct": 5.0, "baseline_3y_twr_pct": 20.0, "vantage_ending_market_value_mm": 248.5429, "baseline_ending_market_value_mm": 210.6375}}, "startup_audit": {"n_startups": 14658, "n_big_exits": 222, "n_any_exits": 1256, "base_rate_pct": 1.5145, "auc_big_exit": 0.8195, "auc_big_exit_ci": [0.7942, 0.8434], "top_decile_size": 1466, "top_decile_hits": 105, "top_decile_lift": 4.7291, "reference_lift": 1.66, "lift_multiple": 2.8488, "track_record_baseline_lift": 3.2878, "pre_window": {"start": "2010-01-01", "end": "2012-12-31"}, "eval_window": {"start": "2013-01-01", "end": "2015-12-31"}, "source": {"artifact": "app/data/startup_edge_snapshot.json", "data_version": "vx-2026.10.21-r1", "generated_utc": "2026-10-21T20:30:12+00:00", "cohort": 2012, "pre_window": {"start": "2010-01-01", "end": "2012-12-31"}, "eval_window": {"start": "2013-01-01", "end": "2015-12-31"}, "big_exit_threshold_usd": 100000000, "pinned": true, "pinned_artifact": "reports/public_startup_audit_pinned.json", "pinned_utc": "2026-10-21T20:30:12+00:00"}}, "overlap_detector": {"max_multiple": 39.4926, "examples": [{"name": "Versant Ventures", "nominal_positions": 84, "true_independent_bets": 3.5959, "overlap_multiple": 23.3599}, {"name": "Alta Partners", "nominal_positions": 83, "true_independent_bets": 2.9587, "overlap_multiple": 28.0532}, {"name": "Domain Associates", "nominal_positions": 82, "true_independent_bets": 2.4657, "overlap_multiple": 33.2568}, {"name": "Sofinnova Ventures", "nominal_positions": 73, "true_independent_bets": 5.968, "overlap_multiple": 12.2318}, {"name": "Orbimed Advisors", "nominal_positions": 69, "true_independent_bets": 2.225, "overlap_multiple": 31.0111}, {"name": "Mpm Capital", "nominal_positions": 69, "true_independent_bets": 2.9231, "overlap_multiple": 23.6052}, {"name": "Arch Venture Partners", "nominal_positions": 69, "true_independent_bets": 5.2444, "overlap_multiple": 13.1569}, {"name": "Novartis Venture Fund", "nominal_positions": 65, "true_independent_bets": 1.6459, "overlap_multiple": 39.4926}, {"name": "Sv Life Sciences", "nominal_positions": 58, "true_independent_bets": 2.5883, "overlap_multiple": 22.4086}, {"name": "Johnson Johnson Development Corporation", "nominal_positions": 58, "true_independent_bets": 3.7487, "overlap_multiple": 15.4718}]}, "blind_spot_managers": [{"name": "Tiger Global Management", "universe_percentile": 99.7, "top_share_pct": 0.3, "alpha_score": 76.3, "emerging_score": 69.49, "competitor_zero_count": 2, "competitor_percentiles": {"track_record_rank": 0.0, "exit_predictor": 0.0, "capital_scale": 90.34, "deal_volume": 79.15, "diversification": 29.67}, "nominal_positions": 34, "true_independent_bets": 5.56, "redundancy_multiple": 6.1155, "regime": "ELEVATED COUPLING", "prior_large_exits": 0, "breakouts": [{"company": "Ganji", "exit_date": "2015-04-17", "value_usd": 446200000}, {"company": "Myntra", "exit_date": "2014-05-22", "value_usd": 300000000}]}, {"name": "Atomico", "universe_percentile": 94.21, "top_share_pct": 5.79, "alpha_score": 65.67, "emerging_score": 68.45, "competitor_zero_count": 2, "competitor_percentiles": {"track_record_rank": 0.0, "exit_predictor": 0.0, "capital_scale": 76.58, "deal_volume": 81.03, "diversification": 97.08}, "nominal_positions": 37, "true_independent_bets": 17.32, "redundancy_multiple": 2.1366, "regime": "OPTIMAL RESONANCE", "prior_large_exits": 0, "breakouts": [{"company": "Supercell", "exit_date": "2013-10-21", "value_usd": 1500000000}, {"company": "The Climate Corporation", "exit_date": "2013-10-02", "value_usd": 930000000}]}, {"name": "SingTel Innov8", "universe_percentile": 91.82, "top_share_pct": 8.18, "alpha_score": 63.93, "emerging_score": 62.33, "competitor_zero_count": 2, "competitor_percentiles": {"track_record_rank": 0.0, "exit_predictor": 0.0, "capital_scale": 64.42, "deal_volume": 62.47, "diversification": 44.54}, "nominal_positions": 20, "true_independent_bets": 7.5, "redundancy_multiple": 2.6675, "regime": "OPTIMAL RESONANCE", "prior_large_exits": 0, "breakouts": [{"company": "Maker Studios", "exit_date": "2014-03-24", "value_usd": 500000000}, {"company": "NEXAGE", "exit_date": "2014-09-23", "value_usd": 107500000}]}, {"name": "Lowercase Capital", "universe_percentile": 91.02, "top_share_pct": 8.98, "alpha_score": 63.38, "emerging_score": 67.76, "competitor_zero_count": 2, "competitor_percentiles": {"track_record_rank": 0.0, "exit_predictor": 0.0, "capital_scale": 85.68, "deal_volume": 75.89, "diversification": 89.16}, "nominal_positions": 30, "true_independent_bets": 16.47, "redundancy_multiple": 1.8219, "regime": "OPTIMAL RESONANCE", "prior_large_exits": 0, "breakouts": [{"company": "OpenDNS", "exit_date": "2015-06-30", "value_usd": 635000000}]}], "blind_spot_startups": [{"name": "WhatsApp", "sector": "Messaging", "index_score": 58.42, "signal": "RESONANT FIT", "pre_exit_rank": 2057, "exit_date": "2014-02-19", "exit_value_usd": 19000000000, "syndicate": ["Sequoia Capital"]}, {"name": "Supercell", "sector": "Games", "index_score": 43.87, "signal": "HIGH-EDGE FOLLOW-ON", "pre_exit_rank": 5208, "exit_date": "2013-10-21", "exit_value_usd": 1500000000, "syndicate": ["Accel", "Initial Capital", "Lifeline Ventures", "London Venture Partners"]}, {"name": "Tumblr", "sector": "Blogging Platforms", "index_score": 73.52, "signal": "HIGH-EDGE FOLLOW-ON", "pre_exit_rank": 146, "exit_date": "2013-05-20", "exit_value_usd": 1100000000, "syndicate": ["CrunchFund", "DFJ Growth", "Greylock Partners", "Insight Venture Partners"]}, {"name": "Waze", "sector": "Navigation", "index_score": 70.76, "signal": "RESONANT FIT", "pre_exit_rank": 335, "exit_date": "2013-06-11", "exit_value_usd": 1100000000, "syndicate": ["Horizons Ventures", "Kleiner Perkins Caufield & Byers", "BlueRun Ventures", "Magma Venture Partners"]}, {"name": "Twitch", "sector": "Broadcasting", "index_score": 53.78, "signal": "RESONANT FIT", "pre_exit_rank": 2976, "exit_date": "2014-08-25", "exit_value_usd": 970000000, "syndicate": ["Alsop Louie Partners", "Bessemer Venture Partners", "Draper Associates"]}, {"name": "Braintree", "sector": "Accounting", "index_score": 71.4, "signal": "RESONANT FIT", "pre_exit_rank": 282, "exit_date": "2013-09-26", "exit_value_usd": 800000000, "syndicate": ["Accel", "Greycroft Partners", "New Enterprise Associates", "RRE Ventures"]}, {"name": "OpenDNS", "sector": "Security", "index_score": 60.87, "signal": "RESONANT FIT", "pre_exit_rank": 1610, "exit_date": "2015-06-30", "exit_value_usd": 635000000, "syndicate": ["Greylock Partners", "Sequoia Capital"]}, {"name": "Maker Studios", "sector": "Games", "index_score": 66.34, "signal": "HIGH-EDGE FOLLOW-ON", "pre_exit_rank": 775, "exit_date": "2014-03-24", "exit_value_usd": 500000000, "syndicate": ["Daher Capital", "Greycroft Partners", "Time Warner Investments", "Upfront Ventures"]}, {"name": "Myntra", "sector": "E-Commerce", "index_score": 57.08, "signal": "HIGH-EDGE FOLLOW-ON", "pre_exit_rank": 2309, "exit_date": "2014-05-22", "exit_value_usd": 300000000, "syndicate": ["IDG Ventures India", "Tiger Global Management", "Kalaari Capital"]}], "benchmarks": [{"key": "vantage_x_alpha", "label": "VANTAGE-X Alpha Score(tm)", "vendor": "VANTAGE-X(tm)", "tone": "#22d3ee", "is_vantage": true, "breakout_lift": 2.0551, "discrimination_auc": 0.733, "emerging_auc": 0.6723, "emerging_auc_defined": true, "external_2026_auc": 0.5987}, {"key": "vantage_x_emerging", "label": "Emerging Manager Conviction Score(tm)", "vendor": "VANTAGE-X(tm)", "tone": "#2dd4bf", "is_vantage": true, "breakout_lift": 2.1028, "discrimination_auc": 0.7318, "emerging_auc": 0.6995, "emerging_auc_defined": true, "external_2026_auc": 0.5953}, {"key": "track_record_rank", "label": "Preqin / CEPRES Track-Record Rank", "vendor": "Preqin \u00b7 CEPRES \u00b7 MSCI", "tone": "#38bdf8", "is_vantage": false, "breakout_lift": 1.9224, "discrimination_auc": 0.6422, "emerging_auc": null, "emerging_auc_defined": false, "external_2026_auc": 0.5503}, {"key": "exit_predictor", "label": "PitchBook Exit Predictor Benchmark", "vendor": "PitchBook", "tone": "#a78bfa", "is_vantage": false, "breakout_lift": 1.7191, "discrimination_auc": 0.6666, "emerging_auc": null, "emerging_auc_defined": false, "external_2026_auc": 0.5726}, {"key": "capital_scale", "label": "PitchBook Capital Scale League", "vendor": "PitchBook \u00b7 NVCA", "tone": "#f472b6", "is_vantage": false, "breakout_lift": 1.8292, "discrimination_auc": 0.7494, "emerging_auc": 0.7036, "emerging_auc_defined": true, "external_2026_auc": 0.614}, {"key": "deal_volume", "label": "PitchBook Deal Volume League", "vendor": "PitchBook", "tone": "#fbbf24", "is_vantage": false, "breakout_lift": 1.4346, "discrimination_auc": 0.7, "emerging_auc": 0.6081, "emerging_auc_defined": true, "external_2026_auc": 0.6081}, {"key": "diversification", "label": "Cobalt / MSCI Diversification Index", "vendor": "Cobalt \u00b7 MSCI", "tone": "#34d399", "is_vantage": false, "breakout_lift": 1.0914, "discrimination_auc": 0.6548, "emerging_auc": 0.575, "emerging_auc_defined": true, "external_2026_auc": 0.6395}], "ledger_entries": [{"sequence": 1, "masked_id": "2005", "target_date": "2005-12-31", "epoch": "2005", "sealed_utc": "2026-10-21T18:27:26+00:00", "payload_hash": "ce587291e101f715931e6394735fda1f25aa2101d1d7d0b0105ebab52873c621", "previous_hash": "GENESIS", "chain_hash": "1fa0062bfbe7ac1392d2bc4a96b123eee1765a011eae273b51f9145d1f88e313", "predictions": [{"masked_id": "LJK-2005-001", "method": "sophia", "metric": "manager_breakout_lift", "value": 2.0551, "content_hash": "ba9596d3e4db06aabccb2a72487a2bc0f74448e7c193d79d02b57fdf1d873cbd", "content_preimage": "LJK-2005-001|sophia|manager_breakout_lift|2.0551"}, {"masked_id": "LJK-2005-002", "method": "phronesis", "metric": "manager_breakout_lift", "value": 2.1028, "content_hash": "4fab9a403b5b97e4e6e411626a0739abcf21b25d15337a845b15e2b92c9762d5", "content_preimage": "LJK-2005-002|phronesis|manager_breakout_lift|2.1028"}, {"masked_id": "LJK-2005-003", "method": "emerging_manager_auc", "metric": "zero_track_record_auc", "value": 0.6995, "content_hash": "66ba9222743051a843cd729db26b23524fe97b08d53ab72cf27b32cbfe93a4c7", "content_preimage": "LJK-2005-003|emerging_manager_auc|zero_track_record_auc|0.6995"}]}, {"sequence": 2, "masked_id": "2007", "target_date": "2007-12-31", "epoch": "2007", "sealed_utc": "2026-10-21T18:27:26+00:00", "payload_hash": "309e007e8127b29c04c522810b8a2b1e332cc9e9ef56992b9167e0919b3e44aa", "previous_hash": "1fa0062bfbe7ac1392d2bc4a96b123eee1765a011eae273b51f9145d1f88e313", "chain_hash": "d625a6860a51de76fb0f4b37211acd732a0d93858553e1c9c231e460d230edfa", "predictions": [{"masked_id": "LJK-2007-001", "method": "sophia", "metric": "manager_breakout_lift", "value": 2.0551, "content_hash": "b714a6d28dc4a79f8e4aa7a1c49fd6c51027b1de35ca8c44158c06c4d5569b27", "content_preimage": "LJK-2007-001|sophia|manager_breakout_lift|2.0551"}, {"masked_id": "LJK-2007-002", "method": "phronesis", "metric": "manager_breakout_lift", "value": 2.1028, "content_hash": "786eeeff874af75ab2207d9840b3c41a9e8ec7b6341377217190c2db14bcbabe", "content_preimage": "LJK-2007-002|phronesis|manager_breakout_lift|2.1028"}, {"masked_id": "LJK-2007-003", "method": "emerging_manager_auc", "metric": "zero_track_record_auc", "value": 0.6995, "content_hash": "04e6e58813fa99cf5d6aaf8b07f389eb571c3d20b15ef3f6e68a3830428f0e95", "content_preimage": "LJK-2007-003|emerging_manager_auc|zero_track_record_auc|0.6995"}]}, {"sequence": 3, "masked_id": "2010", "target_date": "2010-12-31", "epoch": "2010", "sealed_utc": "2026-10-21T18:27:26+00:00", "payload_hash": "d987b9eeb2dae80a73df1e75320bb69fcf7972be03c52cb0d4cdf87bc59c083b", "previous_hash": "d625a6860a51de76fb0f4b37211acd732a0d93858553e1c9c231e460d230edfa", "chain_hash": "ba7a03b59e35f67aaba4d016419e48a148783941bdc11480169f2b2240c0484d", "predictions": [{"masked_id": "LJK-2010-001", "method": "sophia", "metric": "manager_breakout_lift", "value": 2.0551, "content_hash": "f6621bc20ad1e854ea02caa12b0bece8a033be0925615c4c7b2c97d4b69da5f6", "content_preimage": "LJK-2010-001|sophia|manager_breakout_lift|2.0551"}, {"masked_id": "LJK-2010-002", "method": "phronesis", "metric": "manager_breakout_lift", "value": 2.1028, "content_hash": "d6d60f05b250b3b469f1e404a994b5fd76f3147c14556236337ffd1c2fa11810", "content_preimage": "LJK-2010-002|phronesis|manager_breakout_lift|2.1028"}, {"masked_id": "LJK-2010-003", "method": "emerging_manager_auc", "metric": "zero_track_record_auc", "value": 0.6995, "content_hash": "d2dc50d29244b8b26abd060e914cebeb8642d93bae7016cc278e73f2cd9328fe", "content_preimage": "LJK-2010-003|emerging_manager_auc|zero_track_record_auc|0.6995"}]}, {"sequence": 4, "masked_id": "2012", "target_date": "2012-12-31", "epoch": "2012", "sealed_utc": "2026-10-21T18:27:26+00:00", "payload_hash": "f049ddc933d91d30b70e6c909c5aea6e2d902ec182a80eea1c81c32e05188b9b", "previous_hash": "ba7a03b59e35f67aaba4d016419e48a148783941bdc11480169f2b2240c0484d", "chain_hash": "3c5c21a67f7fead21a5bc173494a28e9a75f7ddd4b76a78d6b8a42e01d682245", "predictions": [{"masked_id": "LJK-2012-001", "method": "sophia", "metric": "manager_breakout_lift", "value": 2.1352, "content_hash": "67363366188d60ae40ef0334f5d9ae41c71e095c5510f48d12ac3d67312f6cf9", "content_preimage": "LJK-2012-001|sophia|manager_breakout_lift|2.1352"}, {"masked_id": "LJK-2012-002", "method": "phronesis", "metric": "manager_breakout_lift", "value": 2.1028, "content_hash": "3708cb2969a4cb1ec462274db83f203313c78c0503e5929920972cea63da7edb", "content_preimage": "LJK-2012-002|phronesis|manager_breakout_lift|2.1028"}, {"masked_id": "LJK-2012-003", "method": "emerging_manager_auc", "metric": "zero_track_record_auc", "value": 0.6995, "content_hash": "08fe6ce5bf1c4ed742b6eef1bae04dc1e75958293f778cf41e1a8c9c53fd96d1", "content_preimage": "LJK-2012-003|emerging_manager_auc|zero_track_record_auc|0.6995"}]}, {"sequence": 5, "masked_id": "2024-LP-AUDIT", "target_date": "2024-06-30", "epoch": "2024", "sealed_utc": "2026-10-21T18:27:26+00:00", "payload_hash": "16404d9a6c7d0ea23bd40713b08e2b26ceb332cf1915fb39bf6e6b8df15ed78c", "previous_hash": "3c5c21a67f7fead21a5bc173494a28e9a75f7ddd4b76a78d6b8a42e01d682245", "chain_hash": "0cfc2bce1c91d87e71c35a32256b4542b057d1f2b475e1e52001f3e4218f9839", "predictions": [{"masked_id": "LJK-2024-001", "method": "calstrs_net_irr_above", "metric": "net_irr_pct", "value": 18.7225, "content_hash": "2a3f3f2119b16eee9630df3c3a8a39d72e6f1095790294063f2b38071447c53b", "content_preimage": "LJK-2024-001|calstrs_net_irr_above|net_irr_pct|18.7225"}, {"masked_id": "LJK-2024-002", "method": "calstrs_net_irr_below", "metric": "net_irr_pct", "value": 7.4454, "content_hash": "0ade2344742052905aa1e9a0d4384db34fa0ed0c3b7ce424b7751c5f1a48dd94", "content_preimage": "LJK-2024-002|calstrs_net_irr_below|net_irr_pct|7.4454"}, {"masked_id": "LJK-2024-003", "method": "calstrs_net_tvpi_above", "metric": "net_tvpi", "value": 2.1998, "content_hash": "8d02470566002d35b32a79ca65dfcea25b7bc34aa8d64b93f5dff9b55592f679", "content_preimage": "LJK-2024-003|calstrs_net_tvpi_above|net_tvpi|2.1998"}]}, {"sequence": 6, "masked_id": "2026-Q4-LIVE-SEALED", "target_date": "2026-10-21", "epoch": "2026-Q4", "sealed_utc": "2026-10-21T18:27:26+00:00", "payload_hash": "70aa5e646a6f1f5fad640b3150a67b8726411f68f72a30ddc0eda10c31101a6f", "previous_hash": "0cfc2bce1c91d87e71c35a32256b4542b057d1f2b475e1e52001f3e4218f9839", "chain_hash": "172422be3351cf43031f7e2211ee0ecb064f9712e3caaf9a7a32efea95d61e88", "predictions": [{"masked_id": "LJK-2026-Q4-001", "method": "sophia", "metric": "external_auc", "value": 0.5987, "content_hash": "a83b39ca1233bbd90fb7f53f8bca7d8a78190009332f787d7595f02c637aebbb", "content_preimage": "LJK-2026-Q4-001|sophia|external_auc|0.5987"}, {"masked_id": "LJK-2026-Q4-002", "method": "phronesis", "metric": "external_auc", "value": 0.5953, "content_hash": "93de36084febe042ace67c853bd397715a6edf091e5394021ec1413600d67520", "content_preimage": "LJK-2026-Q4-002|phronesis|external_auc|0.5953"}, {"masked_id": "LJK-2026-Q4-003", "method": "arche_startup", "metric": "startup_external_auc", "value": 0.8195, "content_hash": "d037d40a072b37f1f9c24fb529d6899b2b984f3b11221b09241dc59d007c8a41", "content_preimage": "LJK-2026-Q4-003|arche_startup|startup_external_auc|0.8195"}]}, {"sequence": 7, "masked_id": "2027-ROLLING-SCHEDULE", "target_date": "2027-06-30", "epoch": "2027", "sealed_utc": "2026-10-21T18:27:26+00:00", "payload_hash": "b2fae99e11fa7e54d6a5481c229cea675199ad60236a89228a89c7490d43ed64", "previous_hash": "172422be3351cf43031f7e2211ee0ecb064f9712e3caaf9a7a32efea95d61e88", "chain_hash": "e2b9123ad0f89f68d6dc919d5785d021b75c354a80af206a78ab298def49fccd", "predictions": [{"masked_id": "LJK-2027-001", "method": "sophia", "metric": "external_auc_2027", "value": 0.5987, "content_hash": "377695576c65b5858de180a3abdcc3d144cca511ce28a1140b5124028ceeb7f5", "content_preimage": "LJK-2027-001|sophia|external_auc_2027|0.5987"}, {"masked_id": "LJK-2027-002", "method": "phronesis", "metric": "external_auc_2027", "value": 0.5953, "content_hash": "a65073ee46b0eb6e8e944fc79470c49b2989a005741c858d8703385ca34c80e2", "content_preimage": "LJK-2027-002|phronesis|external_auc_2027|0.5953"}, {"masked_id": "LJK-2027-003", "method": "arche", "metric": "startup_external_auc_2027", "value": 0.8195, "content_hash": "295e07f60f1f78d37526af0df4baed87d090b70f17b88341a5a7d7fff02a6025", "content_preimage": "LJK-2027-003|arche|startup_external_auc_2027|0.8195"}]}], "sealed_picks": [{"masked_id": "LJK-2026-M01", "method": "SOPHIA", "score": 98.4, "status": "ACTIVE", "display": "[SEALED ID: LJK-2026-M01 | SOPHIA: 98.4 | Status: ACTIVE]", "content_hash": "fd66f32d4eae3173652d8c7f5507b59a9c9b81b4965b75d11052c4257b0c5186", "content_preimage": "LJK-2026-M01|SOPHIA|98.4|ACTIVE"}, {"masked_id": "LJK-2026-S01", "method": "ARCHE", "score": 99.1, "status": "ACTIVE", "display": "[SEALED ID: LJK-2026-S01 | ARCHE: 99.1 | Status: ACTIVE]", "content_hash": "c6f825df2bdc00e89f16d52a1bc0709c9dc727983d35747b1d71b545a2ca552f", "content_preimage": "LJK-2026-S01|ARCHE|99.1|ACTIVE"}], "verifier_samples": [{"label": "Batch #1 payload - 2005", "preimage": "{\"epoch\":\"2005\",\"masked_id\":\"2005\",\"predictions\":[{\"content_hash\":\"ba9596d3e4db06aabccb2a72487a2bc0f74448e7c193d79d02b57fdf1d873cbd\",\"content_preimage\":\"LJK-2005-001|sophia|manager_breakout_lift|2.0551\",\"masked_id\":\"LJK-2005-001\",\"method\":\"sophia\",\"metric\":\"manager_breakout_lift\",\"value\":2.0551},{\"content_hash\":\"4fab9a403b5b97e4e6e411626a0739abcf21b25d15337a845b15e2b92c9762d5\",\"content_preimage\":\"LJK-2005-002|phronesis|manager_breakout_lift|2.1028\",\"masked_id\":\"LJK-2005-002\",\"method\":\"phronesis\",\"metric\":\"manager_breakout_lift\",\"value\":2.1028},{\"content_hash\":\"66ba9222743051a843cd729db26b23524fe97b08d53ab72cf27b32cbfe93a4c7\",\"content_preimage\":\"LJK-2005-003|emerging_manager_auc|zero_track_record_auc|0.6995\",\"masked_id\":\"LJK-2005-003\",\"method\":\"emerging_manager_auc\",\"metric\":\"zero_track_record_auc\",\"value\":0.6995}],\"target_date\":\"2005-12-31\"}", "hash": "ce587291e101f715931e6394735fda1f25aa2101d1d7d0b0105ebab52873c621", "kind": "batch payload"}, {"label": "Batch #2 payload - 2007", "preimage": "{\"epoch\":\"2007\",\"masked_id\":\"2007\",\"predictions\":[{\"content_hash\":\"b714a6d28dc4a79f8e4aa7a1c49fd6c51027b1de35ca8c44158c06c4d5569b27\",\"content_preimage\":\"LJK-2007-001|sophia|manager_breakout_lift|2.0551\",\"masked_id\":\"LJK-2007-001\",\"method\":\"sophia\",\"metric\":\"manager_breakout_lift\",\"value\":2.0551},{\"content_hash\":\"786eeeff874af75ab2207d9840b3c41a9e8ec7b6341377217190c2db14bcbabe\",\"content_preimage\":\"LJK-2007-002|phronesis|manager_breakout_lift|2.1028\",\"masked_id\":\"LJK-2007-002\",\"method\":\"phronesis\",\"metric\":\"manager_breakout_lift\",\"value\":2.1028},{\"content_hash\":\"04e6e58813fa99cf5d6aaf8b07f389eb571c3d20b15ef3f6e68a3830428f0e95\",\"content_preimage\":\"LJK-2007-003|emerging_manager_auc|zero_track_record_auc|0.6995\",\"masked_id\":\"LJK-2007-003\",\"method\":\"emerging_manager_auc\",\"metric\":\"zero_track_record_auc\",\"value\":0.6995}],\"target_date\":\"2007-12-31\"}", "hash": "309e007e8127b29c04c522810b8a2b1e332cc9e9ef56992b9167e0919b3e44aa", "kind": "batch payload"}, {"label": "Batch #3 payload - 2010", "preimage": "{\"epoch\":\"2010\",\"masked_id\":\"2010\",\"predictions\":[{\"content_hash\":\"f6621bc20ad1e854ea02caa12b0bece8a033be0925615c4c7b2c97d4b69da5f6\",\"content_preimage\":\"LJK-2010-001|sophia|manager_breakout_lift|2.0551\",\"masked_id\":\"LJK-2010-001\",\"method\":\"sophia\",\"metric\":\"manager_breakout_lift\",\"value\":2.0551},{\"content_hash\":\"d6d60f05b250b3b469f1e404a994b5fd76f3147c14556236337ffd1c2fa11810\",\"content_preimage\":\"LJK-2010-002|phronesis|manager_breakout_lift|2.1028\",\"masked_id\":\"LJK-2010-002\",\"method\":\"phronesis\",\"metric\":\"manager_breakout_lift\",\"value\":2.1028},{\"content_hash\":\"d2dc50d29244b8b26abd060e914cebeb8642d93bae7016cc278e73f2cd9328fe\",\"content_preimage\":\"LJK-2010-003|emerging_manager_auc|zero_track_record_auc|0.6995\",\"masked_id\":\"LJK-2010-003\",\"method\":\"emerging_manager_auc\",\"metric\":\"zero_track_record_auc\",\"value\":0.6995}],\"target_date\":\"2010-12-31\"}", "hash": "d987b9eeb2dae80a73df1e75320bb69fcf7972be03c52cb0d4cdf87bc59c083b", "kind": "batch payload"}, {"label": "Batch #4 payload - 2012", "preimage": "{\"epoch\":\"2012\",\"masked_id\":\"2012\",\"predictions\":[{\"content_hash\":\"67363366188d60ae40ef0334f5d9ae41c71e095c5510f48d12ac3d67312f6cf9\",\"content_preimage\":\"LJK-2012-001|sophia|manager_breakout_lift|2.1352\",\"masked_id\":\"LJK-2012-001\",\"method\":\"sophia\",\"metric\":\"manager_breakout_lift\",\"value\":2.1352},{\"content_hash\":\"3708cb2969a4cb1ec462274db83f203313c78c0503e5929920972cea63da7edb\",\"content_preimage\":\"LJK-2012-002|phronesis|manager_breakout_lift|2.1028\",\"masked_id\":\"LJK-2012-002\",\"method\":\"phronesis\",\"metric\":\"manager_breakout_lift\",\"value\":2.1028},{\"content_hash\":\"08fe6ce5bf1c4ed742b6eef1bae04dc1e75958293f778cf41e1a8c9c53fd96d1\",\"content_preimage\":\"LJK-2012-003|emerging_manager_auc|zero_track_record_auc|0.6995\",\"masked_id\":\"LJK-2012-003\",\"method\":\"emerging_manager_auc\",\"metric\":\"zero_track_record_auc\",\"value\":0.6995}],\"target_date\":\"2012-12-31\"}", "hash": "f049ddc933d91d30b70e6c909c5aea6e2d902ec182a80eea1c81c32e05188b9b", "kind": "batch payload"}, {"label": "Batch #5 payload - 2024-LP-AUDIT", "preimage": "{\"epoch\":\"2024\",\"masked_id\":\"2024-LP-AUDIT\",\"predictions\":[{\"content_hash\":\"2a3f3f2119b16eee9630df3c3a8a39d72e6f1095790294063f2b38071447c53b\",\"content_preimage\":\"LJK-2024-001|calstrs_net_irr_above|net_irr_pct|18.7225\",\"masked_id\":\"LJK-2024-001\",\"method\":\"calstrs_net_irr_above\",\"metric\":\"net_irr_pct\",\"value\":18.7225},{\"content_hash\":\"0ade2344742052905aa1e9a0d4384db34fa0ed0c3b7ce424b7751c5f1a48dd94\",\"content_preimage\":\"LJK-2024-002|calstrs_net_irr_below|net_irr_pct|7.4454\",\"masked_id\":\"LJK-2024-002\",\"method\":\"calstrs_net_irr_below\",\"metric\":\"net_irr_pct\",\"value\":7.4454},{\"content_hash\":\"8d02470566002d35b32a79ca65dfcea25b7bc34aa8d64b93f5dff9b55592f679\",\"content_preimage\":\"LJK-2024-003|calstrs_net_tvpi_above|net_tvpi|2.1998\",\"masked_id\":\"LJK-2024-003\",\"method\":\"calstrs_net_tvpi_above\",\"metric\":\"net_tvpi\",\"value\":2.1998}],\"target_date\":\"2024-06-30\"}", "hash": "16404d9a6c7d0ea23bd40713b08e2b26ceb332cf1915fb39bf6e6b8df15ed78c", "kind": "batch payload"}, {"label": "Batch #6 payload - 2026-Q4-LIVE-SEALED", "preimage": "{\"epoch\":\"2026-Q4\",\"masked_id\":\"2026-Q4-LIVE-SEALED\",\"predictions\":[{\"content_hash\":\"a83b39ca1233bbd90fb7f53f8bca7d8a78190009332f787d7595f02c637aebbb\",\"content_preimage\":\"LJK-2026-Q4-001|sophia|external_auc|0.5987\",\"masked_id\":\"LJK-2026-Q4-001\",\"method\":\"sophia\",\"metric\":\"external_auc\",\"value\":0.5987},{\"content_hash\":\"93de36084febe042ace67c853bd397715a6edf091e5394021ec1413600d67520\",\"content_preimage\":\"LJK-2026-Q4-002|phronesis|external_auc|0.5953\",\"masked_id\":\"LJK-2026-Q4-002\",\"method\":\"phronesis\",\"metric\":\"external_auc\",\"value\":0.5953},{\"content_hash\":\"d037d40a072b37f1f9c24fb529d6899b2b984f3b11221b09241dc59d007c8a41\",\"content_preimage\":\"LJK-2026-Q4-003|arche_startup|startup_external_auc|0.8195\",\"masked_id\":\"LJK-2026-Q4-003\",\"method\":\"arche_startup\",\"metric\":\"startup_external_auc\",\"value\":0.8195}],\"target_date\":\"2026-10-21\"}", "hash": "70aa5e646a6f1f5fad640b3150a67b8726411f68f72a30ddc0eda10c31101a6f", "kind": "batch payload"}, {"label": "Batch #7 payload - 2027-ROLLING-SCHEDULE", "preimage": "{\"epoch\":\"2027\",\"masked_id\":\"2027-ROLLING-SCHEDULE\",\"predictions\":[{\"content_hash\":\"377695576c65b5858de180a3abdcc3d144cca511ce28a1140b5124028ceeb7f5\",\"content_preimage\":\"LJK-2027-001|sophia|external_auc_2027|0.5987\",\"masked_id\":\"LJK-2027-001\",\"method\":\"sophia\",\"metric\":\"external_auc_2027\",\"value\":0.5987},{\"content_hash\":\"a65073ee46b0eb6e8e944fc79470c49b2989a005741c858d8703385ca34c80e2\",\"content_preimage\":\"LJK-2027-002|phronesis|external_auc_2027|0.5953\",\"masked_id\":\"LJK-2027-002\",\"method\":\"phronesis\",\"metric\":\"external_auc_2027\",\"value\":0.5953},{\"content_hash\":\"295e07f60f1f78d37526af0df4baed87d090b70f17b88341a5a7d7fff02a6025\",\"content_preimage\":\"LJK-2027-003|arche|startup_external_auc_2027|0.8195\",\"masked_id\":\"LJK-2027-003\",\"method\":\"arche\",\"metric\":\"startup_external_auc_2027\",\"value\":0.8195}],\"target_date\":\"2027-06-30\"}", "hash": "b2fae99e11fa7e54d6a5481c229cea675199ad60236a89228a89c7490d43ed64", "kind": "batch payload"}, {"label": "Sealed live pick - LJK-2026-M01", "preimage": "LJK-2026-M01|SOPHIA|98.4|ACTIVE", "hash": "fd66f32d4eae3173652d8c7f5507b59a9c9b81b4965b75d11052c4257b0c5186", "kind": "sealed pick"}, {"label": "Sealed live pick - LJK-2026-S01", "preimage": "LJK-2026-S01|ARCHE|99.1|ACTIVE", "hash": "c6f825df2bdc00e89f16d52a1bc0709c9dc727983d35747b1d71b545a2ca552f", "kind": "sealed pick"}], "zero_lookahead": {"guarded": true, "epoch_count": 15, "rule": "Every epoch is scored on a frozen vintage whose data window ends on or before the epoch cutoff, then graded against outcomes realised strictly after that cutoff.", "epochs": [{"epoch": "2002", "cutoff_date": "2002-12-31", "data_asof": "2002-12-31", "graded_after": "out-of-sample forward window"}, {"epoch": "2003", "cutoff_date": "2003-12-31", "data_asof": "2003-12-31", "graded_after": "out-of-sample forward window"}, {"epoch": "2004", "cutoff_date": "2004-12-31", "data_asof": "2004-12-31", "graded_after": "out-of-sample forward window"}, {"epoch": "2005", "cutoff_date": "2005-12-31", "data_asof": "2005-12-31", "graded_after": "out-of-sample forward window"}, {"epoch": "2006", "cutoff_date": "2006-12-31", "data_asof": "2006-12-31", "graded_after": "out-of-sample forward window"}, {"epoch": "2007", "cutoff_date": "2007-12-31", "data_asof": "2007-12-31", "graded_after": "out-of-sample forward window"}, {"epoch": "2008", "cutoff_date": "2008-12-31", "data_asof": "2008-12-31", "graded_after": "out-of-sample forward window"}, {"epoch": "2009", "cutoff_date": "2009-12-31", "data_asof": "2009-12-31", "graded_after": "out-of-sample forward window"}, {"epoch": "2010", "cutoff_date": "2010-12-31", "data_asof": "2010-12-31", "graded_after": "out-of-sample forward window"}, {"epoch": "2011", "cutoff_date": "2011-12-31", "data_asof": "2011-12-31", "graded_after": "out-of-sample forward window"}, {"epoch": "2012", "cutoff_date": "2012-12-31", "data_asof": "2012-12-31", "graded_after": "out-of-sample forward window"}, {"epoch": "2015", "cutoff_date": "2015-12-31", "data_asof": "2015-12-31", "graded_after": "out-of-sample forward window"}, {"epoch": "2024", "cutoff_date": "2024-12-31", "data_asof": "2024-12-31", "graded_after": "out-of-sample forward window"}, {"epoch": "2026", "cutoff_date": "2026-12-31", "data_asof": "2026-12-31", "graded_after": "out-of-sample forward window"}, {"epoch": "2026-Q4", "cutoff_date": "2026-Q4-12-31", "data_asof": "2026-Q4-12-31", "graded_after": "out-of-sample forward window"}]}}</script>
+<script>
+(function(){
+  var LEDGER = JSON.parse(document.getElementById('ledger-data').textContent);
+  var C1 = {"labels": ["2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2015", "2024", "2026", "2026-Q4"], "datasets": [{"label": "LojikVantage\u2122 SOPHIA\u2122 Composite Index", "data": [0.7787, 0.7314, 0.679, 0.7458, 0.7101, 0.6916, 0.7398, 0.7568, 0.7392, 0.7447, 0.7556, 0.7339, null, 0.5987, 0.5955], "borderColor": "#22d3ee", "backgroundColor": "#22d3ee", "tension": 0.28, "borderWidth": 3, "pointRadius": 3, "pointHoverRadius": 6, "spanGaps": false, "isVantage": true}, {"label": "LojikVantage\u2122 PHRONESIS\u2122 Conviction Score", "data": [0.797, 0.7595, 0.6841, 0.7492, 0.7082, 0.688, 0.7281, 0.7474, 0.7361, 0.7376, 0.7541, 0.7354, null, 0.5953, 0.5953], "borderColor": "#2dd4bf", "backgroundColor": "#2dd4bf", "tension": 0.28, "borderWidth": 3, "pointRadius": 3, "pointHoverRadius": 6, "spanGaps": false, "isVantage": true}, {"label": "Preqin / CEPRES Track-Record Rank", "data": [null, null, null, 0.6098, null, 0.6204, null, null, 0.6666, null, 0.672, 0.6422, null, 0.5503, 0.5392], "borderColor": "#38bdf8", "backgroundColor": "#38bdf8", "tension": 0.28, "borderWidth": 2, "pointRadius": 3, "pointHoverRadius": 6, "spanGaps": false, "isVantage": false}, {"label": "PitchBook Capital Scale League", "data": [null, null, null, 0.7497, null, 0.7175, null, null, 0.7394, null, 0.7911, 0.7494, null, 0.614, 0.6052], "borderColor": "#f472b6", "backgroundColor": "#f472b6", "tension": 0.28, "borderWidth": 2, "pointRadius": 3, "pointHoverRadius": 6, "spanGaps": false, "isVantage": false}, {"label": "PitchBook Deal Volume League", "data": [null, null, null, 0.7149, null, 0.6667, null, null, 0.7066, null, 0.7118, 0.7, null, 0.6081, 0.5819], "borderColor": "#fbbf24", "backgroundColor": "#fbbf24", "tension": 0.28, "borderWidth": 2, "pointRadius": 3, "pointHoverRadius": 6, "spanGaps": false, "isVantage": false}, {"label": "Cobalt / MSCI Diversification Index", "data": [null, null, null, 0.6706, null, 0.6236, null, null, 0.68, null, 0.645, 0.6548, null, 0.6395, 0.5965], "borderColor": "#34d399", "backgroundColor": "#34d399", "tension": 0.28, "borderWidth": 2, "pointRadius": 3, "pointHoverRadius": 6, "spanGaps": false, "isVantage": false}]};
+  var C2 = {"labels": ["Startup breakout lift - ARCHE\u2122 Index", "Startup breakout lift - industry exit predictor", "Manager breakout lift - PHRONESIS\u2122", "Manager breakout lift - SOPHIA\u2122", "Manager breakout lift - track-record rank", "Manager breakout lift - capital scale league", "Manager breakout lift - exit predictor count", "Manager breakout lift - deal volume league", "Manager breakout lift - diversification index"], "values": [4.7291, 1.66, 2.1028, 2.0551, 1.9224, 1.8292, 1.7191, 1.4346, 1.0914], "is_vantage": [true, false, true, true, false, false, false, false, false]};
+  var C3 = {"labels": ["D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "CalSTRS", "CalPERS"], "calibration": [1.77, 4.56, 4.94, 6.84, 10.51, 10.52, 12.15, 13.67, 18.48, 32.78, null, null], "pension": [null, null, null, null, null, null, null, null, null, null, 11.28, 8.081]};
+  var SAMPLES = [{"label": "Batch #1 payload - 2005", "preimage": "{\"epoch\":\"2005\",\"masked_id\":\"2005\",\"predictions\":[{\"content_hash\":\"ba9596d3e4db06aabccb2a72487a2bc0f74448e7c193d79d02b57fdf1d873cbd\",\"content_preimage\":\"LJK-2005-001|sophia|manager_breakout_lift|2.0551\",\"masked_id\":\"LJK-2005-001\",\"method\":\"sophia\",\"metric\":\"manager_breakout_lift\",\"value\":2.0551},{\"content_hash\":\"4fab9a403b5b97e4e6e411626a0739abcf21b25d15337a845b15e2b92c9762d5\",\"content_preimage\":\"LJK-2005-002|phronesis|manager_breakout_lift|2.1028\",\"masked_id\":\"LJK-2005-002\",\"method\":\"phronesis\",\"metric\":\"manager_breakout_lift\",\"value\":2.1028},{\"content_hash\":\"66ba9222743051a843cd729db26b23524fe97b08d53ab72cf27b32cbfe93a4c7\",\"content_preimage\":\"LJK-2005-003|emerging_manager_auc|zero_track_record_auc|0.6995\",\"masked_id\":\"LJK-2005-003\",\"method\":\"emerging_manager_auc\",\"metric\":\"zero_track_record_auc\",\"value\":0.6995}],\"target_date\":\"2005-12-31\"}", "hash": "ce587291e101f715931e6394735fda1f25aa2101d1d7d0b0105ebab52873c621", "kind": "batch payload"}, {"label": "Batch #2 payload - 2007", "preimage": "{\"epoch\":\"2007\",\"masked_id\":\"2007\",\"predictions\":[{\"content_hash\":\"b714a6d28dc4a79f8e4aa7a1c49fd6c51027b1de35ca8c44158c06c4d5569b27\",\"content_preimage\":\"LJK-2007-001|sophia|manager_breakout_lift|2.0551\",\"masked_id\":\"LJK-2007-001\",\"method\":\"sophia\",\"metric\":\"manager_breakout_lift\",\"value\":2.0551},{\"content_hash\":\"786eeeff874af75ab2207d9840b3c41a9e8ec7b6341377217190c2db14bcbabe\",\"content_preimage\":\"LJK-2007-002|phronesis|manager_breakout_lift|2.1028\",\"masked_id\":\"LJK-2007-002\",\"method\":\"phronesis\",\"metric\":\"manager_breakout_lift\",\"value\":2.1028},{\"content_hash\":\"04e6e58813fa99cf5d6aaf8b07f389eb571c3d20b15ef3f6e68a3830428f0e95\",\"content_preimage\":\"LJK-2007-003|emerging_manager_auc|zero_track_record_auc|0.6995\",\"masked_id\":\"LJK-2007-003\",\"method\":\"emerging_manager_auc\",\"metric\":\"zero_track_record_auc\",\"value\":0.6995}],\"target_date\":\"2007-12-31\"}", "hash": "309e007e8127b29c04c522810b8a2b1e332cc9e9ef56992b9167e0919b3e44aa", "kind": "batch payload"}, {"label": "Batch #3 payload - 2010", "preimage": "{\"epoch\":\"2010\",\"masked_id\":\"2010\",\"predictions\":[{\"content_hash\":\"f6621bc20ad1e854ea02caa12b0bece8a033be0925615c4c7b2c97d4b69da5f6\",\"content_preimage\":\"LJK-2010-001|sophia|manager_breakout_lift|2.0551\",\"masked_id\":\"LJK-2010-001\",\"method\":\"sophia\",\"metric\":\"manager_breakout_lift\",\"value\":2.0551},{\"content_hash\":\"d6d60f05b250b3b469f1e404a994b5fd76f3147c14556236337ffd1c2fa11810\",\"content_preimage\":\"LJK-2010-002|phronesis|manager_breakout_lift|2.1028\",\"masked_id\":\"LJK-2010-002\",\"method\":\"phronesis\",\"metric\":\"manager_breakout_lift\",\"value\":2.1028},{\"content_hash\":\"d2dc50d29244b8b26abd060e914cebeb8642d93bae7016cc278e73f2cd9328fe\",\"content_preimage\":\"LJK-2010-003|emerging_manager_auc|zero_track_record_auc|0.6995\",\"masked_id\":\"LJK-2010-003\",\"method\":\"emerging_manager_auc\",\"metric\":\"zero_track_record_auc\",\"value\":0.6995}],\"target_date\":\"2010-12-31\"}", "hash": "d987b9eeb2dae80a73df1e75320bb69fcf7972be03c52cb0d4cdf87bc59c083b", "kind": "batch payload"}, {"label": "Batch #4 payload - 2012", "preimage": "{\"epoch\":\"2012\",\"masked_id\":\"2012\",\"predictions\":[{\"content_hash\":\"67363366188d60ae40ef0334f5d9ae41c71e095c5510f48d12ac3d67312f6cf9\",\"content_preimage\":\"LJK-2012-001|sophia|manager_breakout_lift|2.1352\",\"masked_id\":\"LJK-2012-001\",\"method\":\"sophia\",\"metric\":\"manager_breakout_lift\",\"value\":2.1352},{\"content_hash\":\"3708cb2969a4cb1ec462274db83f203313c78c0503e5929920972cea63da7edb\",\"content_preimage\":\"LJK-2012-002|phronesis|manager_breakout_lift|2.1028\",\"masked_id\":\"LJK-2012-002\",\"method\":\"phronesis\",\"metric\":\"manager_breakout_lift\",\"value\":2.1028},{\"content_hash\":\"08fe6ce5bf1c4ed742b6eef1bae04dc1e75958293f778cf41e1a8c9c53fd96d1\",\"content_preimage\":\"LJK-2012-003|emerging_manager_auc|zero_track_record_auc|0.6995\",\"masked_id\":\"LJK-2012-003\",\"method\":\"emerging_manager_auc\",\"metric\":\"zero_track_record_auc\",\"value\":0.6995}],\"target_date\":\"2012-12-31\"}", "hash": "f049ddc933d91d30b70e6c909c5aea6e2d902ec182a80eea1c81c32e05188b9b", "kind": "batch payload"}, {"label": "Batch #5 payload - 2024-LP-AUDIT", "preimage": "{\"epoch\":\"2024\",\"masked_id\":\"2024-LP-AUDIT\",\"predictions\":[{\"content_hash\":\"2a3f3f2119b16eee9630df3c3a8a39d72e6f1095790294063f2b38071447c53b\",\"content_preimage\":\"LJK-2024-001|calstrs_net_irr_above|net_irr_pct|18.7225\",\"masked_id\":\"LJK-2024-001\",\"method\":\"calstrs_net_irr_above\",\"metric\":\"net_irr_pct\",\"value\":18.7225},{\"content_hash\":\"0ade2344742052905aa1e9a0d4384db34fa0ed0c3b7ce424b7751c5f1a48dd94\",\"content_preimage\":\"LJK-2024-002|calstrs_net_irr_below|net_irr_pct|7.4454\",\"masked_id\":\"LJK-2024-002\",\"method\":\"calstrs_net_irr_below\",\"metric\":\"net_irr_pct\",\"value\":7.4454},{\"content_hash\":\"8d02470566002d35b32a79ca65dfcea25b7bc34aa8d64b93f5dff9b55592f679\",\"content_preimage\":\"LJK-2024-003|calstrs_net_tvpi_above|net_tvpi|2.1998\",\"masked_id\":\"LJK-2024-003\",\"method\":\"calstrs_net_tvpi_above\",\"metric\":\"net_tvpi\",\"value\":2.1998}],\"target_date\":\"2024-06-30\"}", "hash": "16404d9a6c7d0ea23bd40713b08e2b26ceb332cf1915fb39bf6e6b8df15ed78c", "kind": "batch payload"}, {"label": "Batch #6 payload - 2026-Q4-LIVE-SEALED", "preimage": "{\"epoch\":\"2026-Q4\",\"masked_id\":\"2026-Q4-LIVE-SEALED\",\"predictions\":[{\"content_hash\":\"a83b39ca1233bbd90fb7f53f8bca7d8a78190009332f787d7595f02c637aebbb\",\"content_preimage\":\"LJK-2026-Q4-001|sophia|external_auc|0.5987\",\"masked_id\":\"LJK-2026-Q4-001\",\"method\":\"sophia\",\"metric\":\"external_auc\",\"value\":0.5987},{\"content_hash\":\"93de36084febe042ace67c853bd397715a6edf091e5394021ec1413600d67520\",\"content_preimage\":\"LJK-2026-Q4-002|phronesis|external_auc|0.5953\",\"masked_id\":\"LJK-2026-Q4-002\",\"method\":\"phronesis\",\"metric\":\"external_auc\",\"value\":0.5953},{\"content_hash\":\"d037d40a072b37f1f9c24fb529d6899b2b984f3b11221b09241dc59d007c8a41\",\"content_preimage\":\"LJK-2026-Q4-003|arche_startup|startup_external_auc|0.8195\",\"masked_id\":\"LJK-2026-Q4-003\",\"method\":\"arche_startup\",\"metric\":\"startup_external_auc\",\"value\":0.8195}],\"target_date\":\"2026-10-21\"}", "hash": "70aa5e646a6f1f5fad640b3150a67b8726411f68f72a30ddc0eda10c31101a6f", "kind": "batch payload"}, {"label": "Batch #7 payload - 2027-ROLLING-SCHEDULE", "preimage": "{\"epoch\":\"2027\",\"masked_id\":\"2027-ROLLING-SCHEDULE\",\"predictions\":[{\"content_hash\":\"377695576c65b5858de180a3abdcc3d144cca511ce28a1140b5124028ceeb7f5\",\"content_preimage\":\"LJK-2027-001|sophia|external_auc_2027|0.5987\",\"masked_id\":\"LJK-2027-001\",\"method\":\"sophia\",\"metric\":\"external_auc_2027\",\"value\":0.5987},{\"content_hash\":\"a65073ee46b0eb6e8e944fc79470c49b2989a005741c858d8703385ca34c80e2\",\"content_preimage\":\"LJK-2027-002|phronesis|external_auc_2027|0.5953\",\"masked_id\":\"LJK-2027-002\",\"method\":\"phronesis\",\"metric\":\"external_auc_2027\",\"value\":0.5953},{\"content_hash\":\"295e07f60f1f78d37526af0df4baed87d090b70f17b88341a5a7d7fff02a6025\",\"content_preimage\":\"LJK-2027-003|arche|startup_external_auc_2027|0.8195\",\"masked_id\":\"LJK-2027-003\",\"method\":\"arche\",\"metric\":\"startup_external_auc_2027\",\"value\":0.8195}],\"target_date\":\"2027-06-30\"}", "hash": "b2fae99e11fa7e54d6a5481c229cea675199ad60236a89228a89c7490d43ed64", "kind": "batch payload"}, {"label": "Sealed live pick - LJK-2026-M01", "preimage": "LJK-2026-M01|SOPHIA|98.4|ACTIVE", "hash": "fd66f32d4eae3173652d8c7f5507b59a9c9b81b4965b75d11052c4257b0c5186", "kind": "sealed pick"}, {"label": "Sealed live pick - LJK-2026-S01", "preimage": "LJK-2026-S01|ARCHE|99.1|ACTIVE", "hash": "c6f825df2bdc00e89f16d52a1bc0709c9dc727983d35747b1d71b545a2ca552f", "kind": "sealed pick"}];
+
+  var AXIS = '#8494ac', GRID = 'rgba(148,163,184,.12)', TEXT = '#dce7f5';
+  Chart.defaults.color = AXIS;
+  Chart.defaults.font.family = '"Inter","Segoe UI",system-ui,sans-serif';
+  Chart.defaults.font.size = 11;
+
+  function baseOptions(extra){
+    var o = {
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'nearest', intersect:false},
+      plugins:{
+        legend:{labels:{color:TEXT, boxWidth:12, boxHeight:12, padding:14, usePointStyle:true, pointStyle:'circle'}},
+        tooltip:{backgroundColor:'#0c1524', borderColor:'rgba(34,211,238,.45)', borderWidth:1,
+                 titleColor:'#e6f2ff', bodyColor:'#c3d4e8', padding:11, cornerRadius:9, displayColors:true,
+                 callbacks:{title:function(items){return items[0].label;}}}
+      },
+      scales:{
+        x:{grid:{color:GRID}, ticks:{color:AXIS}, title:{display:true, color:AXIS}},
+        y:{grid:{color:GRID}, ticks:{color:AXIS}}
+      }
+    };
+    return Object.assign(o, extra||{});
+  }
+
+  new Chart(document.getElementById('chart1'), {
+    type:'line',
+    data:{labels:C1.labels, datasets:C1.datasets},
+    options:baseOptions({
+      plugins:{
+        legend:{labels:{color:TEXT, boxWidth:12, boxHeight:12, padding:14, usePointStyle:true, pointStyle:'circle'}},
+        tooltip:{backgroundColor:'#0c1524', borderColor:'rgba(34,211,238,.45)', borderWidth:1,
+                 titleColor:'#e6f2ff', bodyColor:'#c3d4e8', padding:11, cornerRadius:9,
+                 callbacks:{label:function(ctx){
+                   var s = ctx.dataset.label + ': ';
+                   if(ctx.parsed.y === null || ctx.parsed.y === undefined){ return s + 'not measured this epoch'; }
+                   return s + (ctx.dataset.isVantage ? ctx.parsed.y.toFixed(4) : ctx.parsed.y.toFixed(4))
+                        + (ctx.dataset.isVantage ? ' (LojikVantage)' : '');
+                 }}}
+      },
+      scales:{
+        x:{grid:{color:GRID}, ticks:{color:AXIS, autoSkip:false, maxRotation:60, minRotation:0},
+           title:{display:true, color:AXIS, text:'Market epoch'}},
+        y:{position:'left', min:0.45, max:0.85, grid:{color:GRID}, ticks:{color:AXIS},
+           title:{display:true, color:AXIS, text:'Realised discrimination AUC (0.50 = coin flip)'}},
+        y1:{position:'right', min:0, max:16, grid:{drawOnChartArea:false}, ticks:{color:AXIS},
+           title:{display:true, color:AXIS, text:'Realised pension alpha (percentage points)'}}
+      }
+    })
+  });
+
+  new Chart(document.getElementById('chart2'), {
+    type:'bar',
+    data:{
+      labels:C2.labels,
+      datasets:[{
+        label:'Breakout lift (x base rate)',
+        data:C2.values,
+        backgroundColor:C2.is_vantage.map(function(v){return v ? 'rgba(34,211,238,.85)' : 'rgba(148,163,184,.42)';}),
+        borderColor:C2.is_vantage.map(function(v){return v ? '#22d3ee' : 'rgba(148,163,184,.75)';}),
+        borderWidth:1.5, borderRadius:6, maxBarThickness:46
+      }]
+    },
+    options:baseOptions({
+      indexAxis:'y',
+      plugins:{
+        legend:{display:false},
+        tooltip:{backgroundColor:'#0c1524', borderColor:'rgba(34,211,238,.45)', borderWidth:1,
+                 titleColor:'#e6f2ff', bodyColor:'#c3d4e8', padding:11, cornerRadius:9,
+                 callbacks:{label:function(ctx){
+                   var isV = C2.is_vantage[ctx.dataIndex];
+                   return ctx.parsed.x.toFixed(2) + 'x base rate' + (isV ? '  (LojikVantage)' : '  (industry benchmark)');
+                 }}}
+      },
+      scales:{
+        x:{grid:{color:GRID}, ticks:{color:AXIS}, beginAtZero:true,
+           title:{display:true, color:AXIS, text:'Breakout lift (multiple of the cohort base rate)'}},
+        y:{grid:{display:false}, ticks:{color:TEXT, autoSkip:false, font:{size:10.5}}}
+      }
+    })
+  });
+
+  new Chart(document.getElementById('chart3'), {
+    type:'bar',
+    data:{
+      labels:C3.labels,
+      datasets:[
+        {label:'Realised breakout probability by decile (%)', data:C3.calibration,
+         backgroundColor:'rgba(34,211,238,.8)', borderColor:'#22d3ee', borderWidth:1.5, borderRadius:6, maxBarThickness:48},
+        {label:'Realised pension alpha (percentage points)', data:C3.pension,
+         backgroundColor:'rgba(251,191,36,.85)', borderColor:'#fbbf24', borderWidth:1.5, borderRadius:6, maxBarThickness:48}
+      ]
+    },
+    options:baseOptions({
+      plugins:{
+        legend:{labels:{color:TEXT, boxWidth:12, boxHeight:12, padding:14, usePointStyle:true, pointStyle:'circle'}},
+        tooltip:{backgroundColor:'#0c1524', borderColor:'rgba(34,211,238,.45)', borderWidth:1,
+                 titleColor:'#e6f2ff', bodyColor:'#c3d4e8', padding:11, cornerRadius:9,
+                 callbacks:{label:function(ctx){
+                   if(ctx.parsed.y === null || ctx.parsed.y === undefined){ return ctx.dataset.label + ': not applicable'; }
+                   return ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(2) + '%';
+                 }}}
+      },
+      scales:{
+        x:{grid:{display:false}, ticks:{color:AXIS}},
+        y:{beginAtZero:true, grid:{color:GRID}, ticks:{color:AXIS, callback:function(v){return v + '%';}},
+           title:{display:true, color:AXIS, text:'Percent'}}
+      }
+    })
+  });
+
+  /* ---------- in-browser SHA-256 verifier ---------- */
+  var sel = document.getElementById('v-item');
+  var hashField = document.getElementById('v-hash');
+  var input = document.getElementById('v-input');
+  var out = document.getElementById('v-out');
+  SAMPLES.forEach(function(s, i){
+    var opt = document.createElement('option');
+    opt.value = String(i);
+    opt.textContent = s.kind + ' - ' + s.label;
+    sel.appendChild(opt);
+  });
+  function current(){ return SAMPLES[Number(sel.value || 0)]; }
+  function syncHash(){
+    var s = current();
+    hashField.value = s ? s.hash : '';
+    out.innerHTML = 'Ready. Press <b>Compute SHA-256</b> to recompute the fingerprint locally.';
+  }
+  sel.addEventListener('change', syncHash);
+  document.getElementById('v-fill').addEventListener('click', function(){
+    input.value = current().preimage; out.innerHTML = 'Preimage loaded. Press <b>Compute SHA-256</b>.';
+  });
+  document.getElementById('v-clear').addEventListener('click', function(){
+    input.value = ''; out.innerHTML = 'Waiting for input&hellip;';
+  });
+  function toHex(buffer){
+    return Array.prototype.map.call(new Uint8Array(buffer), function(b){
+      return b.toString(16).padStart(2,'0');
+    }).join('');
+  }
+  document.getElementById('v-run').addEventListener('click', function(){
+    var s = current();
+    if(!s){ out.innerHTML = 'No item selected.'; return; }
+    var text = input.value;
+    if(!text){ out.innerHTML = 'Paste the exact preimage bytes first (or press <b>Load published preimage</b>).'; return; }
+    if(!window.crypto || !window.crypto.subtle){
+      out.innerHTML = '<span class="verdict bad">This browser does not expose crypto.subtle.</span> Use a modern browser over https:// or http://localhost.';
+      return;
+    }
+    var bytes = new TextEncoder().encode(text);
+    window.crypto.subtle.digest('SHA-256', bytes).then(function(buf){
+      var hex = toHex(buf);
+      var ok = hex === s.hash;
+      var alsoPayload = text === s.preimage;
+      out.innerHTML =
+        '<div><b>Computed SHA-256</b>: ' + hex + '</div>' +
+        '<div style="margin-top:7px;"><span class="verdict ' + (ok?'ok':'bad') + '">' +
+        (ok ? 'MATCH - the fingerprint reproduces exactly.' : 'NO MATCH - this is a different payload.') + '</span></div>' +
+        '<div style="margin-top:7px;color:#8494ac;">Published: ' + s.hash + '</div>' +
+        '<div style="margin-top:5px;color:#8494ac;">Preimage identical to the published one: ' +
+        (alsoPayload ? 'yes' : 'no') + '</div>';
+    }).catch(function(err){
+      out.innerHTML = '<span class="verdict bad">Hashing failed: ' + err + '</span>';
+    });
+  });
+  syncHash();
+
+  /* ---------- live cloud heartbeat ---------- */
+  function showHeartbeat(beat, live){
+    var banner = document.getElementById('health-banner');
+    var title = document.getElementById('health-title');
+    var sub = document.getElementById('health-sub');
+    var green = beat && beat.all_green === true;
+    banner.classList.toggle('warn', !green);
+    title.innerHTML = '<span class="dot-live" style="background:' + (green?'#34d399':'#fbbf24') + '"></span><span>' +
+      (green ? 'ALL 7 ROBUSTNESS &amp; AUDIT CHECKS GREEN &mdash; SHA-256 CHAIN VERIFIED'
+              : 'AUDIT ATTENTION REQUIRED &mdash; CHAIN OR CHECK STATUS CHANGED') + '</span>';
+    sub.innerHTML = (live ? 'Live cloud pulse ' : 'Last recorded pulse ') +
+      '<b>' + ((beat && beat.last_pulse_utc) || 'unknown') + '</b> &middot; ' +
+      ((beat && beat.checks_green) || 0) + ' of ' + ((beat && beat.checks_total) || 7) +
+      ' checks green &middot; chain head <span class="mono">' +
+      (((beat && beat.chain_head) || '').slice(0,20)) + '&hellip;</span>' +
+      (live ? ' &middot; read straight from heartbeat.json' : '');
+  }
+  fetch('heartbeat.json', {cache:'no-store'})
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(beat){ showHeartbeat(beat, true); })
+    .catch(function(){ showHeartbeat(null, false); });
+})();
+</script>
+</body>
+</html>
