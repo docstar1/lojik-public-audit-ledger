@@ -1,5 +1,5 @@
 {
-  "last_pulse_utc": "2026-10-21T20:56:42+00:00",
+  "last_pulse_utc": "2026-10-21T22:05:50+00:00",
   "chain_head": "e2b9123ad0f89f68d6dc919d5785d021b75c354a80af206a78ab298def49fccd",
   "chain_entries_verified": 7,
   "checks_green": 7,
@@ -50,5 +50,5 @@
       "detail": "daily scheduled pulse committed to the public repository"
     }
   ],
-  "note": "Refreshed automatically by the scheduled cloud pulse. Recompute with: python verify_and_pulse.py"
+  "note": "Refreshed automatically by the scheduled cloud pulse. Every fingerprint on this page can also be recomputed in your browser."
 }

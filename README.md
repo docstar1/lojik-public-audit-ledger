@@ -4,12 +4,11 @@
 
 This repository is the public, black-box proof portal for **LojikVantage(TM)**, the private-capital
 intelligence platform built by **LojikX(TM)**. It publishes the sealed prediction ledger, the
-audited performance numbers and a script that lets anybody reproduce every hash on their own
-machine.
+audited performance numbers and everything you need to reproduce every hash on your own machine.
 
-Nothing here is a marketing claim without a number attached: every figure in the scoreboard is
-copied from the audited snapshot that produced it, and every prediction batch carries a SHA-256
-fingerprint that can be recomputed in a browser in about one second.
+No source code, no tooling and no proprietary data are published here. What is published is the
+*proof*: the numbers, the SHA-256 fingerprints that lock them, and the plain-English explanation of
+what each number means. Every fingerprint can be recomputed in your browser in about one second.
 
 ---
 
@@ -32,19 +31,11 @@ automated checks that are recomputed from the published data:
 
 ## 2. Verify the SHA-256 hashes yourself
 
-### Option A - the one-liner (no install needed)
+### Option A - the copy-paste one-liner (nothing to install, nothing to clone)
 
-```bash
-git clone https://github.com/docstar1/lojik-public-audit-ledger.git
-cd lojik-public-audit-ledger
-python verify_and_pulse.py
-```
-
-Expected output ends with:
-
-```
-  RESULT: PASS - every published claim reproduced exactly.
-```
+Open the live scoreboard, scroll to **Verify a SHA-256 hash in your browser**, pick any published
+item and press **Compute SHA-256**. The page uses your browser's own built-in cryptography, so
+nothing is uploaded and nothing leaves your machine.
 
 ### Option B - verify a single row by hand
 
@@ -70,12 +61,11 @@ print("chain   ok:", c == e["chain_hash"])
 PY
 ```
 
-### Option C - verify in the browser
+### Option C - verify the whole chain in one go
 
-Open the live scoreboard and scroll to **ALETHEIA(TM) Cryptographic SHA-256 Prediction Ledger**.
-Pick any published item, press **Compute SHA-256**, and the page uses the browser's built-in
-`crypto.subtle.digest('SHA-256', ...)` to recompute the fingerprint and compare it with the
-published value. No upload, no server, nothing leaves your machine.
+The same canonical-JSON rule applied to every batch, chained one after the other, recomputes the
+published chain head exactly. The scheduled pulse in this repository does precisely that every day
+and commits the result back, so the verification runs itself.
 
 ---
 
@@ -83,9 +73,8 @@ published value. No upload, no server, nothing leaves your machine.
 
 | File | Purpose |
 |------|---------|
-| `index.html` | The full dark-mode public scoreboard: live health banner, executive overview, three interactive charts, the blind-spot trophy wall, the sealed ledger and the in-browser hash verifier. |
+| `index.html` | The full dark-mode public scoreboard: live health banner, executive overview, three interactive charts, the blind-spot trophy wall, the Prediction vs. Reality Timeline Ledger, the sealed ledger and the in-browser hash verifier. |
 | `ledger_entries.json` | Machine-readable proof: 15 market epochs, the seven health checks, the decile calibration, the pension audit, the overlap audit and every sealed hash. |
-| `verify_and_pulse.py` | Standalone verifier and health-check runner. Zero third-party dependencies. |
 | `heartbeat.json` | The live cloud-pulse record, refreshed daily by the scheduled pulse. |
 | `automation/pulse.yml` | The scheduled heartbeat that re-verifies and commits `heartbeat.json`. See `automation/README.md` for why it is not under `.github/workflows/`. |
 
