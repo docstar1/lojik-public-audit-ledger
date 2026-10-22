@@ -1,0 +1,13 @@
+entity_name,asset_class,win_tier,initial_prediction_date,confirmed_win_date,advance_lead_time,confirmed_outcome,competitor_status_on_prediction_date
+Bluefin Labs,Startup,Tier 1 — Fast M&A (1-4 mo),2012-12-31,2013-02-04,1 mo,Bluefin Labs acquired for $80M,Unranked by track-record rankings — no prior $100M+ exit existed
+Pulse,Startup,Tier 1 — Fast M&A (1-4 mo),2012-12-31,2013-04-13,3 mo,Pulse acquired for $90M,Unranked by track-record rankings — no prior $100M+ exit existed
+TESARO,Startup,Tier 2 — Fast Follow-On (2-4 mo),2012-12-31,2013-03-06,2 mo,TESARO follow-on round of $91M,Unranked by track-record rankings — no prior $100M+ exit existed
+LivingSocial,Startup,Tier 2 — Fast Follow-On (2-4 mo),2012-12-31,2013-02-20,2 mo,LivingSocial follow-on round of $110M,Unranked by track-record rankings — no prior $100M+ exit existed
+Tumblr,Startup,Tier 3 — Mega Exit,2012-12-31,2013-05-20,4.6 mo,Tumblr acquired for $1.10B,Unranked by track-record rankings — no prior $100M+ exit existed
+Waze,Startup,Tier 3 — Mega Exit,2012-12-31,2013-06-11,5.3 mo,Waze acquired for $1.10B,Unranked by track-record rankings — no prior $100M+ exit existed
+Supercell,Startup,Tier 3 — Mega Exit,2012-12-31,2013-10-21,9.7 mo,Supercell acquired for $1.50B,Unranked by track-record rankings — no prior $100M+ exit existed
+WhatsApp,Startup,Tier 3 — Mega Exit,2012-12-31,2014-02-19,13.6 mo,WhatsApp acquired for $19.00B,Unranked by track-record rankings — no prior $100M+ exit existed
+Atomico,VC Manager,Tier 3 — Mega Exit,2012-12-31,2013-10-21,9.7 mo,Portfolio breakout — Supercell acquired for $1.5B,Unranked by track-record rankings — no prior $100M+ exit existed; ranked by capital scale and deal volume
+Lowercase Capital,VC Manager,Tier 3 — Mega Exit,2012-12-31,2015-06-30,30 mo,Portfolio breakout — OpenDNS acquired for $635M,Unranked by track-record rankings — no prior $100M+ exit existed; ranked by capital scale and deal volume
+Tiger Global Management,VC Manager,Tier 3 — Mega Exit,2012-12-31,2015-04-17,27.5 mo,Portfolio breakout — Ganji acquired for $446M,Unranked by track-record rankings — no prior $100M+ exit existed; ranked by capital scale and deal volume
+SingTel Innov8,VC Manager,Tier 3 — Mega Exit,2012-12-31,2014-03-24,14.7 mo,Portfolio breakout — Maker Studios acquired for $500M,Unranked by track-record rankings — no prior $100M+ exit existed; ranked by capital scale and deal volume
