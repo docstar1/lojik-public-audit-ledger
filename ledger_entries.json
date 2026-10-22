@@ -3,7 +3,7 @@
   "ledger_name": "ALETHEIA Public Verification & Performance Ledger",
   "product": "LojikVantage",
   "vendor": "LojikX",
-  "generated_utc": "2026-10-21T22:05:50+00:00",
+  "generated_utc": "2026-10-22T03:30:15+00:00",
   "data_version": "vx-2026.10.21-r1",
   "chain": {
     "algorithm": "SHA-256",
@@ -1472,7 +1472,7 @@
   ],
   "prediction_timeline": {
     "title": "Prediction vs. Reality Timeline Ledger (Zero Guesswork)",
-    "generated_utc": "2026-10-21T22:05:50+00:00",
+    "generated_utc": "2026-10-22T03:30:15+00:00",
     "algorithm": "SHA-256",
     "rule": "row_hash = SHA-256( entity | method | sealed_date | claim ) -- recompute it and the published fingerprint reproduces exactly.",
     "rows": [
