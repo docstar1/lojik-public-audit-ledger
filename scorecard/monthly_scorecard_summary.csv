@@ -4,7 +4,7 @@ evaluation_period,universe,our_top_decile_hits,our_top_decile_picks,our_breakout
 2010-2013,978 VC managers (2010 vintage),38,98,2.1837,2.0571,1.9732,11.28,CLOSED — VERIFIED
 2012-2015,"1,439 VC managers (2012 vintage)",51,144,2.4611,2.4057,1.7601,11.28,CLOSED — VERIFIED
 2013-2015,"14,658 venture-backed companies",108,1466,4.8642,1.66,3.2878,11.28,CLOSED — VERIFIED
-2026-10,Monthly prediction cohort (top decile),,,,,,,OPEN — EVALUATED MONTHLY (NEXT: 2026-11-30)
+2026-10,Monthly prediction cohort (top decile),0,75,,,,,OPEN — EVALUATED MONTHLY (NEXT: 2026-11-30)
 2026-11,Monthly prediction cohort (top decile),,,,,,,OPEN — EVALUATED MONTHLY (NEXT: 2026-12-31)
 2026-12,Monthly prediction cohort (top decile),,,,,,,OPEN — EVALUATED MONTHLY (NEXT: 2027-01-31)
 2027-01,Monthly prediction cohort (top decile),,,,,,,OPEN — EVALUATED MONTHLY (NEXT: 2027-02-28)

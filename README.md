@@ -16,6 +16,7 @@ confidential data and no unverified identities.
 |------|------------|
 | `index.html` | The one-page executive summary: four headline numbers, the monthly archive links, two charts, twelve verified wins and the complete top-10% bucket accounting. |
 | `predictions/2026-10_predictions.csv` | The 2026-10 prediction cohort in masked (Option B) form. Every entity name is locked as `[LOCKED UNTIL WIN — ID ...]` until the outcome actually realises, and each row carries only a salted one-way commitment token. There is no score, rank, percentile, sector or feature column. |
+| `predictions/manifest.json` | The chronological index of every published monthly cohort: file, row count, byte size and SHA-256 fingerprint. |
 | `scorecard/monthly_scorecard_summary.csv` | The monthly evaluation table: our top-decile hits and picks next to the published industry benchmarks, one row per evaluation period, plus the pension alpha and the status of each cohort. |
 | `scorecard/verified_sample_wins.csv` | Twelve curated verified wins across the three win tiers. Only three dates and the confirmed real-world outcome are published. |
 
