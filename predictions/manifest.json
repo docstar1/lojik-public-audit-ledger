@@ -18,5 +18,7 @@
       "picks": 75,
       "status": "OPEN \u2014 EVALUATED MONTHLY (NEXT: 2026-11-30)"
     }
-  ]
+  ],
+  "last_cloud_verified_utc": "2026-10-22 12:17 UTC",
+  "cloud_status": "GREEN \u2014 VERIFIED BY GITHUB ACTIONS"
 }
